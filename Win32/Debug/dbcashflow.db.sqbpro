@@ -1,0 +1,442 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="C:/Users/aluga.com/Documents/RAD Studio/Projects/Balance/Win32/Debug/db/dbcashflow.db" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><current_tab id="1"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="2073"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><current_table name="CENTRODECUSTO"/><default_encoding codec=""/><browse_table_settings><table schema="main" name="CENTRODECUSTO" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk=""><sort/><column_widths/><filter_values/><display_formats/><hidden_columns/><plot_y_axes/></table><table schema="main" name="TBBANKING" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk=""><sort/><column_widths/><filter_values/><display_formats/><hidden_columns/><plot_y_axes/></table></browse_table_settings></tab_browse><tab_sql><sql name="SQL 1">insert into TBBANKING ( name, account_type ) values ('SYNOVUS BANK','BANK');
+insert into TBBANKING ( name, account_type ) values ('DESCOVERY CARD','CARD');
+insert into TBBANKING ( name, account_type ) values ('CASH','CASH');
+insert into TBBANKING ( name, account_type ) values ('NUBANK CARD','CARD');
+insert into TBBANKING ( name, account_type ) values ('NUBANK','BANK');</sql><sql name="SQL 2">insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('GROCERIES' ,'1' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('RENT' ,'1' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('CAR' ,'1' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('FUEL' ,'1' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('MEAL' ,'1' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('HEALTH INSURANCE' ,'1' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('SHIPPING' ,'1' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('INCOME' ,'1' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('PHONE BILL' ,'1' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('TRANSFER' ,'1' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('CLOTHING' ,'1' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('TRIP' ,'1' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('SUBSCRIPTION' ,'1' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('FINANCING' ,'1' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('MISCELLANEOUS' ,'1' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('BANK RATE' ,'1' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('INVESTMENT' ,'1' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('EDUCATION' ,'1' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('CREDIT CARD' ,'1' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('GROCERIES' ,'2' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('RENT' ,'2' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('CAR' ,'2' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('FUEL' ,'2' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('MEAL' ,'2' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('HEALTH INSURANCE' ,'2' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('SHIPPING' ,'2' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('INCOME' ,'2' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('PHONE BILL' ,'2' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('TRANSFER' ,'2' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('CLOTHING' ,'2' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('TRIP' ,'2' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('SUBSCRIPTION' ,'2' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('FINANCING' ,'2' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('MISCELLANEOUS' ,'2' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('BANK RATE' ,'2' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('INVESTMENT' ,'2' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('EDUCATION' ,'2' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('CREDIT CARD' ,'2' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('GROCERIES' ,'3' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('RENT' ,'3' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('CAR' ,'3' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('FUEL' ,'3' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('MEAL' ,'3' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('HEALTH INSURANCE' ,'3' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('SHIPPING' ,'3' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('INCOME' ,'3' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('PHONE BILL' ,'3' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('TRANSFER' ,'3' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('CLOTHING' ,'3' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('TRIP' ,'3' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('SUBSCRIPTION' ,'3' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('FINANCING' ,'3' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('MISCELLANEOUS' ,'3' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('BANK RATE' ,'3' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('INVESTMENT' ,'3' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('EDUCATION' ,'3' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('CREDIT CARD' ,'3' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('GROCERIES' ,'5' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('RENT' ,'5' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('CAR' ,'5' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('FUEL' ,'5' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('MEAL' ,'5' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('HEALTH INSURANCE' ,'5' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('SHIPPING' ,'5' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('INCOME' ,'5' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('PHONE BILL' ,'5' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('TRANSFER' ,'5' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('CLOTHING' ,'5' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('TRIP' ,'5' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('SUBSCRIPTION' ,'5' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('FINANCING' ,'5' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('MISCELLANEOUS' ,'5' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('BANK RATE' ,'5' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('INVESTMENT' ,'5' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('EDUCATION' ,'5' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('CREDIT CARD' ,'5' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('GROCERIES' ,'6' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('RENT' ,'6' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('CAR' ,'6' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('FUEL' ,'6' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('MEAL' ,'6' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('HEALTH INSURANCE' ,'6' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('SHIPPING' ,'6' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('INCOME' ,'6' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('PHONE BILL' ,'6' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('TRANSFER' ,'6' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('CLOTHING' ,'6' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('TRIP' ,'6' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('SUBSCRIPTION' ,'6' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('FINANCING' ,'6' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('MISCELLANEOUS' ,'6' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('BANK RATE' ,'6' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('INVESTMENT' ,'6' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('EDUCATION' ,'6' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('CREDIT CARD' ,'6' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('CASHBACK' ,'1' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('ELETRIC POWER' ,'1' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('BALANCE' ,'1' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('CASH' ,'1' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('GROCERIES' ,'7' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('RENT' ,'7' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('CAR' ,'7' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('FUEL' ,'7' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('MEAL' ,'7' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('HEALTH INSURANCE' ,'7' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('SHIPPING' ,'7' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('INCOME' ,'7' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('PHONE BILL' ,'7' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('TRANSFER' ,'7' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('CLOTHING' ,'7' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('TRIP' ,'7' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('SUBSCRIPTION' ,'7' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('FINANCING' ,'7' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('MISCELLANEOUS' ,'7' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('BANK RATE' ,'7' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('INVESTMENT' ,'7' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('EDUCATION' ,'7' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('CREDIT CARD' ,'7' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('CASHBACK' ,'7' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('ELETRIC POWER' ,'7' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('BALANCE' ,'7' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('CASH' ,'7' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('GROCERIES' ,'8' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('RENT' ,'8' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('CAR' ,'8' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('FUEL' ,'8' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('MEAL' ,'8' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('HEALTH INSURANCE' ,'8' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('SHIPPING' ,'8' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('INCOME' ,'8' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('PHONE BILL' ,'8' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('TRANSFER' ,'8' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('CLOTHING' ,'8' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('TRIP' ,'8' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('SUBSCRIPTION' ,'8' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('FINANCING' ,'8' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('MISCELLANEOUS' ,'8' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('BANK RATE' ,'8' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('INVESTMENT' ,'8' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('EDUCATION' ,'8' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('CREDIT CARD' ,'8' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('CASHBACK' ,'8' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('ELETRIC POWER' ,'8' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('BALANCE' ,'8' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('CASH' ,'8' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('GROCERIES' ,'9' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('RENT' ,'9' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('CAR' ,'9' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('FUEL' ,'9' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('MEAL' ,'9' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('HEALTH INSURANCE' ,'9' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('SHIPPING' ,'9' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('INCOME' ,'9' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('PHONE BILL' ,'9' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('TRANSFER' ,'9' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('CLOTHING' ,'9' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('TRIP' ,'9' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('SUBSCRIPTION' ,'9' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('FINANCING' ,'9' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('MISCELLANEOUS' ,'9' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('BANK RATE' ,'9' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('INVESTMENT' ,'9' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('EDUCATION' ,'9' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('CREDIT CARD' ,'9' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('INTERNET HOME' ,'1' ,'1' ,'2');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('DEPOSIT' ,'1' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('DOORDASH' ,'1' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('DOORDASH.COM' ,'1' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('MAPLEBEAR INC' ,'1' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('STRIPE' ,'1' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('UBER' ,'1' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('DEPOSIT' ,'2' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('DOORDASH' ,'2' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('DOORDASH.COM' ,'2' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('MAPLEBEAR INC' ,'2' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('STRIPE' ,'2' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('UBER' ,'2' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('DEPOSIT' ,'3' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('DOORDASH' ,'3' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('DOORDASH.COM' ,'3' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('MAPLEBEAR INC' ,'3' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('STRIPE' ,'3' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('UBER' ,'3' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('DEPOSIT' ,'4' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('DOORDASH' ,'4' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('DOORDASH.COM' ,'4' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('MAPLEBEAR INC' ,'4' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('STRIPE' ,'4' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('UBER' ,'4' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('DEPOSIT' ,'5' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('DOORDASH' ,'5' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('DOORDASH.COM' ,'5' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('MAPLEBEAR INC' ,'5' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('STRIPE' ,'5' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('UBER' ,'5' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('DEPOSIT' ,'6' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('DOORDASH' ,'6' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('DOORDASH.COM' ,'6' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('MAPLEBEAR INC' ,'6' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('STRIPE' ,'6' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('UBER' ,'6' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('DEPOSIT' ,'7' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('DOORDASH' ,'7' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('DOORDASH.COM' ,'7' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('MAPLEBEAR INC' ,'7' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('STRIPE' ,'7' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('UBER' ,'7' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('DEPOSIT' ,'8' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('DOORDASH' ,'8' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('DOORDASH.COM' ,'8' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('MAPLEBEAR INC' ,'8' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('STRIPE' ,'8' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('UBER' ,'8' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('DEPOSIT' ,'9' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('DOORDASH' ,'9' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('DOORDASH.COM' ,'9' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('MAPLEBEAR INC' ,'9' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('STRIPE' ,'9' ,'1' ,'1');
+insert into CentrodeCusto (CentroDeCusto, id_user, id_language, grupo )  
+ VALUES ('UBER' ,'9' ,'1' ,'1');</sql><current_tab id="1"/></tab_sql></sqlb_project>

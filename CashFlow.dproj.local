@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2021/07/21 09:56:49.000.186,=C:\Users\aluga.com\Documents\RAD Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2021/07/21 10:48:01.000.627,=C:\Users\aluga.com\Documents\RAD Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2023/02/10 18:18:35.000.925,=C:\Users\aluga.com\Documents\RAD Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2023/02/10 18:21:28.000.423,=C:\Users\aluga.com\Documents\RAD Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2023/02/10 18:22:28.000.918,C:\Users\aluga.com\Documents\RAD Studio\Projects\CashFlow\CashFlow.dproj=C:\Users\aluga.com\Documents\RAD Studio\Projects\Project1.dproj</Transaction>
+    <Transaction>2023/02/10 18:24:32.000.935,=C:\Users\aluga.com\Documents\RAD Studio\Projects\CashFlow\uDados.pas</Transaction>
+    <Transaction>2023/02/10 18:24:33.000.051,=C:\Users\aluga.com\Documents\RAD Studio\Projects\CashFlow\uFrmLogin.pas</Transaction>
+    <Transaction>2023/02/10 18:24:33.000.735,=C:\Users\aluga.com\Documents\RAD Studio\Projects\CashFlow\uFrmPrincipal.pas</Transaction>
+    <Transaction>2023/02/11 19:23:55.000.080,=C:\Users\aluga.com\Documents\RAD Studio\Projects\CashFlow\sqlite3.dll</Transaction>
+    <Transaction>2023/02/11 19:24:38.000.264,C:\Users\aluga.com\Documents\RAD Studio\Projects\CashFlow\sqlite3.dll=</Transaction>
+    <Transaction>2023/02/13 20:37:43.000.388,=C:\Users\aluga.com\Documents\RAD Studio\Projects\CashFlow\Unit1.pas</Transaction>
+    <Transaction>2023/02/13 20:39:49.000.239,C:\Users\aluga.com\Documents\RAD Studio\Projects\CashFlow\Unit1.pas=C:\Users\aluga.com\Documents\RAD Studio\Projects\CashFlow\uMenuPrincipal.pas</Transaction>
+    <Transaction>2023/02/13 20:39:49.000.239,C:\Users\aluga.com\Documents\RAD Studio\Projects\CashFlow\Unit1.dfm=C:\Users\aluga.com\Documents\RAD Studio\Projects\CashFlow\uMenuPrincipal.dfm</Transaction>
+    <Transaction>2023/02/13 22:52:15.000.338,=C:\Users\aluga.com\Documents\RAD Studio\Projects\CashFlow\ufrmAccount.pas</Transaction>
+    <Transaction>2023/02/14 15:09:16.000.937,=C:\Users\aluga.com\Documents\RAD Studio\Projects\CashFlow\ufrmCreateAccount.pas</Transaction>
+    <Transaction>2023/02/14 15:09:16.000.809,=C:\Users\aluga.com\Documents\RAD Studio\Projects\CashFlow\ufrmCentroDeCusto.pas</Transaction>
+    <Transaction>2023/02/14 15:09:16.000.539,=C:\Users\aluga.com\Documents\RAD Studio\Projects\CashFlow\uFrmAddTransacao.pas</Transaction>
+    <Transaction>2023/02/14 15:09:16.000.690,=C:\Users\aluga.com\Documents\RAD Studio\Projects\CashFlow\uFrmCategoria.pas</Transaction>
+    <Transaction>2023/02/14 15:09:17.000.250,=C:\Users\aluga.com\Documents\RAD Studio\Projects\CashFlow\uImportFile.pas</Transaction>
+    <Transaction>2023/02/14 15:09:17.000.112,=C:\Users\aluga.com\Documents\RAD Studio\Projects\CashFlow\uFrmVincularCentroCusto.pas</Transaction>
+  </Transactions>
+</BorlandProject>
