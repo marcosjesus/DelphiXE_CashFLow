@@ -154,6 +154,7 @@ object frmMenuPrincipal: TfrmMenuPrincipal
     object dxBarManagerBarBarraAcessoRapido: TdxBar
       Caption = 'Barra de acesso r'#225'pido'
       CaptionButtons = <>
+      DockedDockingStyle = dsTop
       DockedLeft = 0
       DockedTop = 0
       FloatLeft = 0
@@ -226,7 +227,7 @@ object frmMenuPrincipal: TfrmMenuPrincipal
           ItemName = 'dxBarLargeButtonSIOPDashBoard'
         end>
       OneOnRow = False
-      Row = 1
+      Row = 0
       UseOwnFont = True
       Visible = True
       WholeRow = False
@@ -332,7 +333,7 @@ object frmMenuPrincipal: TfrmMenuPrincipal
           ItemName = 'dxBarLargeButton4'
         end>
       OneOnRow = False
-      Row = 1
+      Row = 0
       UseOwnFont = False
       Visible = True
       WholeRow = False
@@ -721,7 +722,7 @@ object frmMenuPrincipal: TfrmMenuPrincipal
           Visible = True
           ItemName = 'dxBarLargeButton5'
         end>
-      OneOnRow = True
+      OneOnRow = False
       Row = 0
       UseOwnFont = False
       Visible = True

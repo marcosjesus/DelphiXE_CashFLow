@@ -42,6 +42,7 @@ type
     procedure cxButton1Click(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure butCancelClick(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
   private
     { Private declarations }
   public
@@ -103,6 +104,8 @@ begin
     begin
         Mens_MensInf('User not Found.');
         EdiUsuario.Text := '';
+        EdiSenha.Text := '';
+        EdiUsuario.SetFocus;
         Exit;
     end
     else
@@ -167,6 +170,11 @@ procedure TFrmLogin.EdiSenhaKeyDown(Sender: TObject; var Key: Word;
 begin
   if Key = 13 then
     ButOkClick(Self);
+end;
+
+procedure TFrmLogin.FormActivate(Sender: TObject);
+begin
+  EdiUsuario.SetFocus;
 end;
 
 procedure TFrmLogin.FormClose(Sender: TObject; var Action: TCloseAction);

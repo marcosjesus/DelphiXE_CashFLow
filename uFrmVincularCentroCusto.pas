@@ -23,31 +23,50 @@ uses
   FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf, FireDAC.Stan.Def,
   FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys, Data.DB,
   FireDAC.Comp.Client, FireDAC.Stan.Param, FireDAC.DatS, FireDAC.DApt.Intf,
-  FireDAC.DApt, FireDAC.Comp.DataSet, Vcl.DBCtrls, Vcl.Menus, cxButtons;
+  FireDAC.DApt, FireDAC.Comp.DataSet, Vcl.DBCtrls, Vcl.Menus, cxButtons,
+  cxStyles, dxSkinscxPCPainter, cxCustomData, cxFilter, cxData, cxDataStorage,
+  cxNavigator, cxDBData, cxGridLevel, cxClasses, cxGridCustomView,
+  cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxGrid, cxCheckBox;
 
 type
   TfrmVincularCentroCusto = class(TForm)
-    lblFavorecido: TLabel;
     Panel1: TPanel;
-    lblCategoria: TLabel;
-    lblValor: TLabel;
-    lblDataCompra: TLabel;
-    Label1: TLabel;
-    Label2: TLabel;
-    Label3: TLabel;
-    Label4: TLabel;
-    Label5: TLabel;
     sqlCentroCusto: TFDQuery;
     dsCentroCusto: TDataSource;
     sqlAux: TFDQuery;
     lblFile: TLabel;
-    cxButton1: TcxButton;
+    Label1: TLabel;
+    lblFavorecido: TLabel;
+    Label2: TLabel;
+    lblCategoria: TLabel;
+    Label3: TLabel;
+    lblValor: TLabel;
+    Label4: TLabel;
+    lblDataCompra: TLabel;
+    Panel2: TPanel;
+    ButConfirm: TcxButton;
     butCancel: TcxButton;
     butDelete: TcxButton;
-    cboCC: TComboBox;
+    Panel3: TPanel;
+    cxGrid1DBTableView1: TcxGridDBTableView;
+    cxGrid1Level1: TcxGridLevel;
+    cxGrid1: TcxGrid;
+    sqlCentroCustoID_CentrodeCusto: TFDAutoIncField;
+    sqlCentroCustoCentroDeCusto: TStringField;
+    sqlCentroCustoCategoria: TStringField;
+    sqlCentroCustoID_USER: TIntegerField;
+    sqlCentroCustoID_LANGUAGE: TIntegerField;
+    sqlCentroCustoGRUPO: TIntegerField;
+    sqlCentroCustoTIPO: TStringField;
+    cxGrid1DBTableView1ID_CentrodeCusto: TcxGridDBColumn;
+    cxGrid1DBTableView1CentroDeCusto: TcxGridDBColumn;
+    cxGrid1DBTableView1Categoria: TcxGridDBColumn;
     procedure FormCreate(Sender: TObject);
-    procedure cxButton1Click(Sender: TObject);
+    procedure ButConfirmClick(Sender: TObject);
     procedure butDeleteClick(Sender: TObject);
+    procedure cxGrid1DBTableView1CellDblClick(Sender: TcxCustomGridTableView;
+      ACellViewInfo: TcxGridTableDataCellViewInfo; AButton: TMouseButton;
+      AShift: TShiftState; var AHandled: Boolean);
   private
     { Private declarations }
      idx : Integer;
@@ -55,7 +74,10 @@ type
     { Public declarations }
         bAlterar : Boolean;
         ID_Transacao : Integer;
+        procedure BuscaCentroCusto(Valor: Double);
+
   end;
+
 
 var
   frmVincularCentroCusto: TfrmVincularCentroCusto;
@@ -92,37 +114,75 @@ begin
 
 end;
 
-procedure TfrmVincularCentroCusto.cxButton1Click(Sender: TObject);
+procedure TfrmVincularCentroCusto.ButConfirmClick(Sender: TObject);
 begin
-   idx := cboCC.ItemIndex;
+{   idx := cboCC.ItemIndex;
   if idx = -1 then
   begin
     Mens_MensInf(Dados.RetornaMensagem('MEN_MENS_SELCC') );
     cboCC.SetFocus;
     exit;
   end;
+  }
+end;
+
+procedure TfrmVincularCentroCusto.cxGrid1DBTableView1CellDblClick(
+  Sender: TcxCustomGridTableView; ACellViewInfo: TcxGridTableDataCellViewInfo;
+  AButton: TMouseButton; AShift: TShiftState; var AHandled: Boolean);
+begin
+
+  if Mens_MensConf(pchar('Do you want make this a rule? '+#13#10+#13#10+ 'FAVORECIDO: ' + lblFavorecido.Caption +
+  '    CATEGORY: ' + lblCategoria.Caption +#13#10+#13#10+
+  'COST CENTER: ' + sqlCentroCusto.FieldByName('CentrodeCusto').AsString + '    CATEGORY: ' + sqlCentroCusto.FieldByName('Categoria').AsString)) = mrOK  then
+  begin
+
+    Dados.CadastraCategoria(lblFavorecido.Caption,
+                            sqlCentroCusto.FieldByName('Categoria').AsString,
+                            lblCategoria.Caption,
+                            sqlCentroCusto.FieldByName('CENTRODECUSTO').AsString);
+  end
+  else
+  begin
+    Exit;
+  end;
+  ButConfirm.Click;
+
 end;
 
 procedure TfrmVincularCentroCusto.FormCreate(Sender: TObject);
 begin
  Dados.ConectarNoBanco;
+ Height := 600;
+ Width := 1000;
+ Top := 100;
+ Left := 200;
 
+end;
+
+procedure   TfrmVincularCentroCusto.BuscaCentroCusto(Valor : Double);
+begin
  sqlCentroCusto.Close;
  sqlCentroCusto.SQL.Clear;
- sqlCentroCusto.SQL.Add('Select * from CentrodeCusto Where ID_LANGUAGE = :ID_LANGUAGE  and ID_USER = :ID_USER Order by CENTRODECUSTO, GRUPO ');
- sqlCentroCusto.Params.ParamByName('ID_LANGUAGE').AsInteger := 1; //Dados.varID_Language;
+ sqlCentroCusto.SQL.Add('Select * from CentrodeCusto Where ID_LANGUAGE = :ID_LANGUAGE  and ID_USER = :ID_USER ');
+ if Valor >= 0 then
+    sqlCentroCusto.SQL.Add(' AND TIPO = ''INCOME''')
+ else  sqlCentroCusto.SQL.Add(' AND TIPO = ''EXPENSE''');
+
+ sqlCentroCusto.SQL.Add(' Order by CENTRODECUSTO, Categoria,  GRUPO ');
+
+ sqlCentroCusto.Params.ParamByName('ID_LANGUAGE').AsInteger := Dados.varID_Language;
  sqlCentroCusto.Params.ParamByName('ID_USER').AsInteger     := Dados.varID_USER;
  sqlCentroCusto.Open;
  lblFile.Caption := IntToStr(Dados.varLinha) + '/' + IntToStr(Dados.varTotalLinha);
  sqlCentroCusto.First;
+ {
  cboCC.Items.Clear;
  while not sqlCentroCusto.Eof do
  begin
-     cboCC.Items.AddObject(sqlCentroCusto.FieldByName('CentrodeCusto').AsString, TObject(sqlCentroCusto.FieldByName('ID_CentrodeCusto').AsInteger));
+     cboCC.Items.AddObject(sqlCentroCusto.FieldByName('CentrodeCusto').AsString +  ' - ' + sqlCentroCusto.FieldByName('Categoria').AsString , TObject(sqlCentroCusto.FieldByName('ID_CentrodeCusto').AsInteger));
      sqlCentroCusto.Next;
  end;
-
-
+  }
 end;
 
 end.

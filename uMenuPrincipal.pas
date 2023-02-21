@@ -177,8 +177,8 @@ implementation
 
 {$R *.dfm}
 
-uses ufrmAccount, uDados, uFrmLogin, uFrmPrincipal, MensFun, uFrmCategoria,
-  ufrmCentroDeCusto, uImportFile, uFrmAddTransacao;
+uses ufrmAccount, uDados, uFrmLogin, MensFun, uFrmCategoria,
+  ufrmCentroDeCusto, uImportFile, uFrmAddTransacao, uFrmTransacao;
 
 procedure TfrmMenuPrincipal.dxBarLargeButton4Click(Sender: TObject);
 begin
@@ -201,7 +201,7 @@ begin
   for I := 0 to MDIChildCount - 1 do begin
     if MDIChildren[I] is TForm then
     begin
-         MDIChildren[I].Close;
+        MDIChildren[I].Close;
     end;
   end;
 
@@ -220,26 +220,26 @@ procedure TfrmMenuPrincipal.dxBarLargeButtonSIOPDashBoardClick(Sender: TObject);
 begin
  if Dados.varLogado = False Then Exit;
 
- if not Assigned(frmPrincipal) then Exit;
+ if not Assigned(frmTransacao) then Exit;
 
- if ((Dados.BuscaDados = False) or (frmPrincipal.sqlRelat01.IsEmpty)) Then Exit;
+ if ((Dados.BuscaDados = False) or (frmTransacao.sqlRelat01.IsEmpty)) Then Exit;
 
-  if frmPrincipal.Page.ActivePageIndex = 0 then
+  if frmTransacao.Page.ActivePageIndex = 0 then
   begin
-        if frmPrincipal.sqlRelat01.IsEmpty then
+        if frmTransacao.sqlRelat01.IsEmpty then
             raise Exception.Create('Não há dados para serem exportados ao Excel');
 
       //  SaveDialog.InitialDir := GetCurrentDir;
-        frmPrincipal.Mensagem('Aguarde, Salvando Planilha...');
+        frmTransacao.Mensagem('Aguarde, Salvando Planilha...');
         if SaveDialog.Execute then
         begin
            Screen.Cursor := crHourGlass;
-           ExportGridToExcel(SaveDialog.FileName, frmPrincipal.cxGrid1, True, True);
-           frmPrincipal.Mensagem( pChar( 'Planilha exportada em  ' + ExtractFilePath(SaveDialog.FileName) ) );
+           ExportGridToExcel(SaveDialog.FileName, frmTransacao.cxGrid1, True, True);
+           frmTransacao.Mensagem( pChar( 'Planilha exportada em  ' + ExtractFilePath(SaveDialog.FileName) ) );
 
         end;
         Screen.Cursor := crDefault;
-        frmPrincipal.Mensagem( EmptyStr );
+        frmTransacao.Mensagem( EmptyStr );
   end;
 end;
 
@@ -248,17 +248,17 @@ procedure TfrmMenuPrincipal.dxBarLargeButtonSIOPGestaoMercadoClick(
 begin
   if Dados.varLogado = False  then Exit;
 
-  if not Assigned(frmPrincipal) then Exit;
+  if not Assigned(frmTransacao) then Exit;
 
 
   Try
     Application.CreateForm(TfrmAddTransacao, frmAddTransacao);
     frmAddTransacao.ShowModal;
     if Dados.varBanco = '1' then
-      frmPrincipal.RelatorioCentroCustoSQLServer(frmPrincipal.chkForecast.Checked, frmPrincipal.chkBalance.Checked)
+      frmTransacao.RelatorioCentroCustoSQLServer(frmTransacao.chkForecast.Checked, frmTransacao.chkBalance.Checked)
     else if Dados.varBanco = '2' then
     begin
-      frmPrincipal.RelatorioCentroCustoSQLITE(frmPrincipal.chkForecast.Checked, frmPrincipal.chkBalance.Checked);
+      frmTransacao.RelatorioCentroCustoSQLITE(frmTransacao.chkForecast.Checked, frmTransacao.chkBalance.Checked);
     end;
 
   Finally
@@ -271,13 +271,14 @@ procedure TfrmMenuPrincipal.dxBarLargeButtonSIOPRecuperacaodeContasClick(
 begin
    if Dados.varLogado = False  then Exit;
 
-  if not Assigned(frmPrincipal) then
-    frmPrincipal := TfrmPrincipal.Create(Self);
-    frmPrincipal.Show;
+  if not Assigned(frmTransacao) then
+    frmTransacao := TfrmTransacao.Create(Self);
+    frmTransacao.Show;
 
-    frmPrincipal.Visible := True;
-    frmPrincipal.BringToFront;
-    frmPrincipal.Update;
+
+    frmTransacao.Visible := True;
+    frmTransacao.BringToFront;
+    frmTransacao.Update;
 end;
 
 procedure TfrmMenuPrincipal.dxBarLargeButtonSIOPRelatorioPartNumberClick(
@@ -473,13 +474,9 @@ begin
 
      if Dados.CheckBank = 0 then
      begin
-        Try
           Application.CreateForm(TfrmAccount, frmAccount);
-          frmAccount.ShowModal;
+          frmAccount.Show;
           //ListaBancos;
-        Finally
-          FreeAndNil(FrmAccount);
-        End;
      end;
 
   except

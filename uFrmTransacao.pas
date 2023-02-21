@@ -37,7 +37,8 @@ uses
   cxClasses, cxGridCustomView, cxGridBandedTableView, cxGridDBBandedTableView,
   cxGrid, cxCheckBox, cxPC, cxTextEdit, cxMaskEdit, cxDropDownEdit, cxLabel,
   Vcl.StdCtrls, Vcl.ExtCtrls, FireDAC.Comp.DataSet, Datasnap.DBClient,
-  Datasnap.Provider, FireDAC.Comp.Client, dxGDIPlusClasses;
+  Datasnap.Provider, FireDAC.Comp.Client, dxGDIPlusClasses, Vcl.Grids,
+  Vcl.DBGrids;
 
 type
   TfrmTransacao = class(TForm)
@@ -57,22 +58,11 @@ type
     cdsTransacaoID_USER: TIntegerField;
     dsTransacao: TDataSource;
     sqlGraficoWeek: TFDQuery;
-    sqlGraficoWeekCENTRODECUSTO: TStringField;
-    sqlGraficoWeekWEEK: TIntegerField;
-    sqlGraficoWeekVALOR: TFMTBCDField;
     dsGraficoWeek: TDataSource;
     dsItem: TDataSource;
     dsGraficoBarra: TDataSource;
     sqlGraficoBarra: TFDQuery;
-    sqlGraficoBarraCENTRODECUSTO: TStringField;
-    sqlGraficoBarraMES: TIntegerField;
-    sqlGraficoBarraANO: TIntegerField;
-    sqlGraficoBarraVALOR: TFMTBCDField;
     sqlItem: TFDQuery;
-    sqlItemFavorecido: TStringField;
-    sqlItemCategoria: TStringField;
-    sqlItemdatatransacao: TDateField;
-    sqlItemVALOR: TBCDField;
     dsRelat01: TDataSource;
     dsBank: TDataSource;
     sqlBank: TFDQuery;
@@ -83,23 +73,15 @@ type
     sqlCentroCustoID_CENTRODECUSTO: TIntegerField;
     sqlCentroCustoCENTRODECUSTO: TStringField;
     sqlGrafIE: TFDQuery;
-    sqlGrafIESEMANA: TIntegerField;
-    sqlGrafIEEXPENSE: TFMTBCDField;
-    sqlGrafIEINCOME: TFMTBCDField;
     dsDetalhe: TDataSource;
     dsGrafico1: TDataSource;
     sqlGrafico1: TFDQuery;
-    sqlGrafico1LEGENDA: TStringField;
-    sqlGrafico1VALOR: TFMTBCDField;
     sqlDetalhe: TFDQuery;
     sqlDetalheID: TFDAutoIncField;
     sqlDetalheFavorecido: TStringField;
     sqlDetalheCategoria: TStringField;
     sqlDetalheSubCategoria: TStringField;
     sqlDetalheDataTransacao: TDateField;
-    sqlDetalheValor: TBCDField;
-    sqlDetalhemes: TIntegerField;
-    sqlDetalheano: TIntegerField;
     SqlAux: TFDQuery;
     SaveDialog: TSaveDialog;
     Panel3: TPanel;
@@ -171,6 +153,25 @@ type
     PanelSQLSplashScreen: TPanel;
     ImageSQLSplashScreen: TImage;
     cxLabelMensagem: TcxLabel;
+    sqlDetalheValor: TFloatField;
+    sqlDetalhemes: TWideStringField;
+    sqlDetalheano: TWideStringField;
+    sqlGrafico1LEGENDA: TWideStringField;
+    sqlGrafico1Valor: TFloatField;
+    sqlItemFavorecido: TStringField;
+    sqlItemCategoria: TWideStringField;
+    sqlItemDataTransacao: TDateField;
+    sqlItemVALOR: TFloatField;
+    sqlGraficoBarraCENTRODECUSTO: TStringField;
+    sqlGraficoBarraMES: TWideStringField;
+    sqlGraficoBarraANO: TWideStringField;
+    sqlGraficoBarraVALOR: TFloatField;
+    sqlGraficoWeekCENTRODECUSTO: TStringField;
+    sqlGraficoWeekWEEK: TWideStringField;
+    sqlGraficoWeekVALOR: TFloatField;
+    sqlGrafIESEMANA: TWideStringField;
+    sqlGrafIEVALOR_EXPENSE: TFloatField;
+    sqlGrafIEVALOR_INCOME: TFloatField;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure cxGrid1DBBandedTableView1CellDblClick(
       Sender: TcxCustomGridTableView;
@@ -179,7 +180,16 @@ type
     procedure cxGridDetDBTableView1CellDblClick(Sender: TcxCustomGridTableView;
       ACellViewInfo: TcxGridTableDataCellViewInfo; AButton: TMouseButton;
       AShift: TShiftState; var AHandled: Boolean);
-    procedure FormCreate(Sender: TObject);
+    procedure chkBalanceClick(Sender: TObject);
+    procedure chkForecastClick(Sender: TObject);
+    procedure cboAnoBaseChange(Sender: TObject);
+    procedure cxTipoPropertiesChange(Sender: TObject);
+    procedure cboMonthPropertiesChange(Sender: TObject);
+    procedure cboYearChange(Sender: TObject);
+    procedure cboYear3Change(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
+    procedure cboMonth3PropertiesChange(Sender: TObject);
+    procedure PageChange(Sender: TObject);
   private
     { Private declarations }
     idx : Integer;
@@ -216,7 +226,7 @@ type
     { Public declarations }
 
      FFormatoBR: TFormatSettings;
-    procedure Mensagem(pMensagem: String);
+     procedure Mensagem(pMensagem: String);
 
      procedure RelatorioCentroCustoSQLITE(Forecast, Balance: Boolean);
      procedure RelatorioCentroCustoSQLServer(Forecast, Balance: Boolean);
@@ -295,7 +305,7 @@ begin
     begin
 
 
-       sqlGrafIE.SQL.Add('SELECT CAST(strftime(''%w'', DATATRANSACAO) AS "SEMANA ::BIGINT") AS SEMANA , ');
+       sqlGrafIE.SQL.Add('SELECT strftime(''%w'', DATATRANSACAO)  AS SEMANA , ');
 
        sqlGrafIE.SQL.Add('coalesce(SUM((SELECT COALESCE(B.VALOR * -1,0) ');
        sqlGrafIE.SQL.Add('FROM TBTRANSACAO B  ');
@@ -338,7 +348,7 @@ begin
        if idx <> -1 then
          sqlGrafIE.MacroByName( 'WHERE2' ).AsRaw := ' AND ID_BANKING = ' + IntToStr(Integer(cboBank.Items.Objects[Idx]));
 
-       sqlGrafIE.SQL.SaveToFile('c:\bibanco\sqlGrafIE.sql');
+       //sqlGrafIE.SQL.SaveToFile('c:\bibanco\sqlGrafIE.sql');
 
        sqlGrafIE.Open;
 
@@ -473,6 +483,160 @@ begin
 end;
 
 
+procedure TfrmTransacao.cboAnoBaseChange(Sender: TObject);
+begin
+  if (Dados.BuscaDados = False)  Then Exit;
+
+  if  Dados.varBanco = '1' then
+   RelatorioCentroCustoSQLServer(chkForecast.Checked, chkBalance.Checked)
+  else if Dados.varBanco = '2' then
+       RelatorioCentroCustoSQLITE(chkForecast.Checked, chkBalance.Checked);
+end;
+
+procedure TfrmTransacao.cboMonth3PropertiesChange(Sender: TObject);
+begin
+  if Dados.BuscaDados = False then Exit;
+
+ if Dados.varBanco = '1' then
+ begin
+    GerarGraficoIE(' and  DATEPART(MONTH, DATATRANSACAO) = ' + QuotedStr(IntToStr(cboMonth3.ItemIndex))
+   + ' and DATEPART(YEAR, DATATRANSACAO) = ' + QuotedStr(cboYear3.Text));
+ end
+ else
+ begin
+     GerarGraficoIE(' and strftime(''%m'', DATATRANSACAO) = ' + QuotedStr(IntToStr(cboMonth3.ItemIndex))
+   + ' and strftime(''%Y'', DATATRANSACAO)  = ' + QuotedStr(cboYear3.Text));
+ end;
+end;
+
+procedure TfrmTransacao.cboMonthPropertiesChange(Sender: TObject);
+begin
+   Dados.ConectarNoBanco;
+
+   if cboBank.Items.Count > 0 then
+      idx := cboBank.ItemIndex;
+
+   if Dados.varBanco = '1' then
+   begin
+       sqlGraficoWeek.Close;
+       sqlGraficoWeek.SQL.Clear;
+       sqlGraficoWeek.SQL.Add('SELECT CENTRODECUSTO,  DATEPART(week, DATATRANSACAO) as [WEEK], SUM(VALOR * -1) AS VALOR ');
+       sqlGraficoWeek.SQL.Add(' FROM TBTRANSACAO ');
+       sqlGraficoWeek.SQL.Add(' WHERE 1 = 1 and FORECAST = 0 ');
+       sqlGraficoWeek.SQL.Add(' &WHERE1 ');
+       sqlGraficoWeek.SQL.Add(' &WHERE2 ');
+       sqlGraficoWeek.SQL.Add(' &WHERE3 ');
+       sqlGraficoWeek.SQL.Add(' &WHERE4 ');
+
+
+       sqlGraficoWeek.SQL.Add(' AND CENTRODECUSTO IS NOT NULL ');
+       sqlGraficoWeek.SQL.Add(' AND CENTRODECUSTO = :CentrodeCusto ');
+       sqlGraficoWeek.SQL.Add(' GROUP BY CENTRODECUSTO,DATEPART(week, DATATRANSACAO) ');
+       sqlGraficoWeek.SQL.Add(' ORDER BY DATEPART(week, DATATRANSACAO) ');
+
+       sqlGraficoWeek.Params.ParamByName('CentrodeCusto').AsString := sqlRelat01.Fields.Fields[2].AsString;
+
+       sqlGraficoWeek.MacroByName( 'WHERE1' ).AsRaw := ' AND ID_USER = ' + IntToStr(Dados.varID_USER);
+
+       sqlGraficoWeek.MacroByName( 'WHERE2' ).AsRaw := ' AND MONTH(DATATRANSACAO) = ' + IntToStr(cboMonth.ItemIndex+1);
+
+       sqlGraficoWeek.MacroByName( 'WHERE3' ).AsRaw := ' AND YEAR(DATATRANSACAO) = ' + cboYear.Text;
+
+
+       if idx <> -1 then
+          sqlGraficoWeek.MacroByName( 'WHERE4' ).AsRaw := ' AND ID_BANKING = ' +IntToStr(Integer(cboBank.Items.Objects[Idx]));
+
+       sqlGraficoWeek.Open;
+   end
+   else if Dados.varBanco = '2' then
+        begin
+
+       sqlGraficoWeek.Close;
+       sqlGraficoWeek.SQL.Clear;
+
+       sqlGraficoWeek.SQL.Add('SELECT CENTRODECUSTO,   strftime(''%w'', DATATRANSACAO) AS WEEK, IFNULL(Sum(CAST(VALOR * -1 AS DECIMAL)),0.00) AS VALOR ');
+       sqlGraficoWeek.SQL.Add(' FROM TBTRANSACAO ');
+       sqlGraficoWeek.SQL.Add(' WHERE 1 = 1 and FORECAST = 0 ');
+       sqlGraficoWeek.SQL.Add(' &WHERE1 ');
+       sqlGraficoWeek.SQL.Add(' &WHERE2 ');
+       sqlGraficoWeek.SQL.Add(' &WHERE3 ');
+       sqlGraficoWeek.SQL.Add(' &WHERE4 ');
+
+
+       sqlGraficoWeek.SQL.Add(' AND CENTRODECUSTO IS NOT NULL ');
+       sqlGraficoWeek.SQL.Add(' AND CENTRODECUSTO = :CentrodeCusto ');
+       sqlGraficoWeek.SQL.Add(' GROUP BY CENTRODECUSTO, strftime(''%w'', DATATRANSACAO)  ');
+       sqlGraficoWeek.SQL.Add(' ORDER BY strftime(''%w'', DATATRANSACAO) ');
+
+       sqlGraficoWeek.Params.ParamByName('CentrodeCusto').AsString := sqlRelat01.Fields.Fields[2].AsString;
+
+       sqlGraficoWeek.MacroByName( 'WHERE1' ).AsRaw := ' AND ID_USER = ' + IntToStr(Dados.varID_USER);
+
+       sqlGraficoWeek.MacroByName( 'WHERE2' ).AsRaw := ' AND  strftime(''%m'', DATATRANSACAO) = ' + QuotedStr(IntToStr(cboMonth.ItemIndex+1));
+
+       sqlGraficoWeek.MacroByName( 'WHERE3' ).AsRaw := ' AND  strftime(''%Y'', DATATRANSACAO)= ' +QuotedStr(cboYear.Text);
+
+
+       if idx <> -1 then
+          sqlGraficoWeek.MacroByName( 'WHERE4' ).AsRaw := ' AND ID_BANKING = ' +IntToStr(Integer(cboBank.Items.Objects[Idx]));
+       Try
+         sqlGraficoWeek.Open;
+       except
+        on E : Exception do
+         if Pos('WideString', E.Message) <> 0 then
+           Mens_MensInf('There is no Data for Weekly Bar Chart')
+         else
+            Mens_MensErro(E.ClassName+' error raised, with message : '+E.Message);
+
+       End;
+   end
+
+end;
+
+procedure TfrmTransacao.cboYear3Change(Sender: TObject);
+begin
+  if Dados.BuscaDados = False then Exit;
+
+  if Dados.varBanco = '1' then
+    GerarGraficoIE(' and  DATEPART(YEAR, DATATRANSACAO) = ' + QuotedStr(cboYear3.Text) )
+  else
+    GerarGraficoIE(' and  strftime(''%Y'', DATATRANSACAO) = ' + QuotedStr(cboYear3.Text) )
+
+end;
+
+procedure TfrmTransacao.cboYearChange(Sender: TObject);
+begin
+  cboMonth.Properties.OnChange(Nil);
+end;
+
+procedure TfrmTransacao.chkBalanceClick(Sender: TObject);
+begin
+ if Dados.varBanco = '1' then
+    RelatorioCentroCustoSQLServer(chkForecast.Checked, chkBalance.Checked)
+ else if Dados.varBanco = '2' then
+    RelatorioCentroCustoSQLITE(chkForecast.Checked, chkBalance.Checked)
+end;
+
+procedure TfrmTransacao.chkForecastClick(Sender: TObject);
+begin
+  if Dados.varBanco = '1' then
+  begin
+      if chkForecast.Checked = True then
+        RelatorioCentroCustoSQLServer(chkForecast.Checked, chkBalance.Checked)
+      else
+        RelatorioCentroCustoSQLServer(chkForecast.Checked, chkBalance.Checked);
+  end
+  else if Dados.varBanco = '2' then
+
+  begin
+     if chkForecast.Checked = True then
+        RelatorioCentroCustoSQLITE(chkForecast.Checked, chkBalance.Checked)
+      else
+        RelatorioCentroCustoSQLITE(chkForecast.Checked, chkBalance.Checked);
+
+  end;
+end;
+
 procedure TfrmTransacao.cxGrid1DBBandedTableView1CellDblClick(
   Sender: TcxCustomGridTableView; ACellViewInfo: TcxGridTableDataCellViewInfo;
   AButton: TMouseButton; AShift: TShiftState; var AHandled: Boolean);
@@ -513,7 +677,7 @@ begin
    begin
        sqlDetalhe.Close;
        sqlDetalhe.SQL.Clear;
-       sqlDetalhe.SQL.Add('SELECT ID, Favorecido, Categoria, SubCategoria, DataTransacao, Valor, strftime(''%w'', DATATRANSACAO) as mes, year(datatransacao) as ano FROM TBTRANSACAO ');
+       sqlDetalhe.SQL.Add('SELECT ID, Favorecido, Categoria, SubCategoria, DataTransacao, CAST(Valor AS decimal) as Valor, strftime(''m'', DATATRANSACAO) as mes,  strftime(''%Y'', DATATRANSACAO) as ano FROM TBTRANSACAO ');
        sqlDetalhe.SQL.Add(' Where CentrodeCusto = :CentrodeCusto and FORECAST = 0 and DataTransacao >= :MES_INI and  DataTransacao <= :MES_FIM ');
        sqlDetalhe.SQL.Add(' &WHERE1 ');
        sqlDetalhe.SQL.Add(' &WHERE2 ');
@@ -605,7 +769,7 @@ begin
   begin
       sqlGrafico1.Close;
       sqlGrafico1.SQL.Clear;
-      sqlGrafico1.SQL.Add('SELECT CAST(''TOTAL'' AS VARCHAR(100)) AS LEGENDA,  Sum(IFNULL(VALOR * -1,0.00)) AS "VALOR ::FLOAT"');
+      sqlGrafico1.SQL.Add('SELECT CAST(''TOTAL'' AS VARCHAR(100)) AS LEGENDA,  Sum(CAST(IFNULL(VALOR * -1,0.00) AS DECIMAL)) AS VALOR ');
       sqlGrafico1.SQL.Add('FROM TBTRANSACAO ');
       sqlGrafico1.SQL.Add('WHERE 1 = 1 and FORECAST = 0 ' );
       sqlGrafico1.SQL.Add(' &WHERE1  ');
@@ -616,7 +780,7 @@ begin
 
       sqlGrafico1.SQL.Add('UNION ALL     ');
 
-      sqlGrafico1.SQL.Add('SELECT CAST(CENTRODECUSTO AS VARCHAR(100)) AS LEGENDA,  Sum(IFNULL(VALOR * -1,0.00)) AS "VALOR ::FLOAT"   ');
+      sqlGrafico1.SQL.Add('SELECT CAST(CENTRODECUSTO AS VARCHAR(100)) AS LEGENDA,  Sum(CAST(IFNULL(VALOR * -1,0.00) AS DECIMAL)) AS VALOR ');
       sqlGrafico1.SQL.Add('FROM TBTRANSACAO   ');
       sqlGrafico1.SQL.Add('WHERE 1 = 1 and FORECAST = 0 ' );
       sqlGrafico1.SQL.Add(' AND DATATRANSACAO BETWEEN :MES_INI AND :MES_FIM  ');
@@ -657,7 +821,7 @@ begin
 
   sqlItem.Close;
   sqlItem.SQL.Clear;
-  sqlItem.SQL.Add('SELECT Favorecido, CAST(Categoria + ''_'' + SubCategoria AS VARCHAR(100)) as Categoria, datatransacao, VALOR  AS VALOR ');
+  sqlItem.SQL.Add('SELECT Favorecido, CAST(Categoria + ''_'' + SubCategoria AS VARCHAR(100)) as Categoria, datatransacao, VALOR  ');
   sqlItem.SQL.Add('FROM TBTRANSACAO ');
   sqlItem.SQL.Add('WHERE 1 = 1  and FORECAST = 0 ');
   sqlItem.SQL.Add(' AND DataTransacao >= :MES_INI and  DataTransacao <= :MES_FIM  ');
@@ -687,6 +851,19 @@ begin
   MostraGrafBarra;
 end;
 
+procedure TfrmTransacao.PageChange(Sender: TObject);
+begin
+   if ((Page.ActivePage = TabDetalhe) or (Page.ActivePage = TabSpend)  or (Page.ActivePage = TabIE)) Then
+     if ((Dados.BuscaDados = False) or  (sqlRelat01.IsEmpty)) then
+          Page.ActivePage := TabTransacao;
+
+   if Page.ActivePage = TabIE then
+   begin
+      cboYear3.ItemIndex := cboAnoBase.ItemIndex;
+      cboYear3.OnChange(Nil);
+   end;
+end;
+
 procedure  TfrmTransacao.MostraGrafBarra;
 begin
    if sqlRelat01.IsEmpty then exit;
@@ -699,22 +876,28 @@ begin
    sqlGraficoBarra.SQL.Clear;
    if Dados.varBanco = '1' then
     sqlGraficoBarra.SQL.Add('SELECT CENTRODECUSTO,  MONTH(DATATRANSACAO) AS MES , YEAR(DATATRANSACAO) AS ANO, SUM(VALOR * -1)  AS VALOR ')
-   else  sqlGraficoBarra.SQL.Add('SELECT CENTRODECUSTO,  strftime(''%m'', DATATRANSACAO) AS MES , strftime(''%Y'', DATATRANSACAO) AS ANO, Sum(IFNULL(VALOR * -1,0.00)) AS "VALOR ::FLOAT" ');
+   else  sqlGraficoBarra.SQL.Add('SELECT CENTRODECUSTO,  strftime(''%m'', DATATRANSACAO) AS MES , strftime(''%Y'', DATATRANSACAO) AS ANO, CAST(SUM(VALOR * -1) AS DECIMAL)  AS VALOR ');
 
    sqlGraficoBarra.SQL.Add('FROM TBTRANSACAO ');
    sqlGraficoBarra.SQL.Add('WHERE 1 = 1 and FORECAST = 0 ');
 
-   sqlGraficoBarra.SQL.Add(' AND DataTransacao >= :MES_INI and  DataTransacao <= :MES_FIM  ');
+   sqlGraficoBarra.SQL.Add(' AND DataTransacao between :MES_INI and :MES_FIM  ');
 
    sqlGraficoBarra.SQL.Add(' AND CENTRODECUSTO IS NOT NULL   ');
    sqlGraficoBarra.SQL.Add('    &WHERE1  ');
    sqlGraficoBarra.SQL.Add('    &WHERE2  ');
    sqlGraficoBarra.SQL.Add('    &WHERE3  ');
-   sqlGraficoBarra.SQL.Add('GROUP BY CENTRODECUSTO, MONTH(DATATRANSACAO) , YEAR(DATATRANSACAO) ');
    if Dados.varBanco = '1' then
-     sqlGraficoBarra.SQL.Add('ORDER BY MONTH(DATATRANSACAO) , YEAR(DATATRANSACAO) DESC ')
-    else   sqlGraficoBarra.SQL.Add('ORDER BY strftime(''%m'', DATATRANSACAO)  ,  strftime(''%Y'', DATATRANSACAO) DESC ');
+   begin
+     sqlGraficoBarra.SQL.Add('GROUP BY CENTRODECUSTO, MONTH(DATATRANSACAO) , YEAR(DATATRANSACAO) ');
+     sqlGraficoBarra.SQL.Add(' ORDER BY MONTH(DATATRANSACAO) , YEAR(DATATRANSACAO) DESC ')
+   end
+    else
+    begin
+      sqlGraficoBarra.SQL.Add('GROUP BY CENTRODECUSTO, strftime(''%m'', DATATRANSACAO)  ,  strftime(''%Y'', DATATRANSACAO) ');
+      sqlGraficoBarra.SQL.Add(' ORDER BY strftime(''%m'', DATATRANSACAO)  ,  strftime(''%Y'', DATATRANSACAO) DESC ');
 
+    end;
 
    if Dados.varUsuario  <> '' then
      sqlGraficoBarra.MacroByName( 'WHERE1' ).AsRaw := ' AND ID_USER = ' + IntToStr(Dados.varID_USER);
@@ -723,7 +906,6 @@ begin
 
   if Idx <> -1 then
       sqlGraficoBarra.MacroByName( 'WHERE3' ).AsRaw := ' AND ID_USERBANK = ' + IntToStr(Integer(cboBank.Items.Objects[Idx]));
-
 
 
    sqlGraficoBarra.Params.ParamByName( 'MES_INI' ).AsDateTime := IncMonth(IncMonth(System.DateUtils.StartOfTheMonth(dtDateTrans), +1), -13);
@@ -760,7 +942,7 @@ begin
            sqlAux.SQL.Clear;
            sqlAux.SQL.Add('Update TBTransacao Set CentrodeCusto = :CentrodeCusto');
            sqlAux.SQL.Add(' Where ID = :ID ');
-           sqlAux.Params.ParamByName('CentrodeCusto').AsString :=  frmVincularCentroCusto.cboCC.Text;
+           //sqlAux.Params.ParamByName('CentrodeCusto').AsString := // frmVincularCentroCusto.cboCC.Text;
            sqlAux.Params.ParamByName('ID').AsInteger           :=  sqlDetalhe.FieldByName('ID').AsInteger;
               Try
                  sqlAux.ExecSQL;
@@ -786,6 +968,26 @@ begin
 end;
 
 
+procedure TfrmTransacao.cxTipoPropertiesChange(Sender: TObject);
+begin
+ if (Dados.BuscaDados = False)  Then Exit;
+
+ if cboBank.ItemIndex <> -1 then
+ begin
+   idx := cboBank.ItemIndex;
+   Dados.varID_Bank := Dados.BuscaID_Bank(Integer(cboBank.Items.Objects[Idx]));
+
+  if  Dados.varBanco = '1' then
+     RelatorioCentroCustoSQLServer(chkForecast.Checked, chkBalance.Checked)
+  else if Dados.varBanco = '2' then
+            RelatorioCentroCustoSQLITE(chkForecast.Checked, chkBalance.Checked);
+
+ end
+ else
+    Mens_MensInf( 'Select one account ' );
+
+end;
+
 procedure TfrmTransacao.RelatorioCentroCustoSQLITE(Forecast, Balance: Boolean);
 begin
 
@@ -798,23 +1000,28 @@ begin
 
  Try
     Dados.ConectarNoBanco;
+    idx := -1;
 
     if cboBank.Items.Count > 0 then
        idx := cboBank.ItemIndex;
 
     varMesesComLabel   := MontaStringMes(True,'','B',False,False);
     varMesesComLabelA  := MontaStringMes(True,'','A',True, False);
+
+    varMesesSemLabelT  := MontaStringMes(True,'','B',False, True);
+    varMesesSemLabelT  := Copy(varMesesSemLabelT, 1, Length(varMesesSemLabelT)-1);
+
     sqlRelat01.Close;
     sqlRelat01.SQL.Clear;
 
     if Balance then
     begin
 
-      sqlRelat01.SQL.Add(' SELECT  ''R'' AS SOURCE, 0 AS GRUPO,  ''BALANCE'' AS  [Centro de Custo],  ');
+      sqlRelat01.SQL.Add(' SELECT  ''R'' AS SOURCE, 0 AS GRUPO,  ''BALANCE'' AS  [CENTRO DE CUSTO], ''BALANCE'' AS CATEGORIA, ');
       sqlRelat01.SQL.Add( varMesesComLabelA );
-      sqlRelat01.SQL.Add(', SUM(COALESCE(VALOR,0)) AS Total ');
+      sqlRelat01.SQL.Add(', 0 AS Total ');
       sqlRelat01.SQL.Add(' 	FROM TBTRANSACAO T   ');
-      sqlRelat01.SQL.Add('  LEFT OUTER JOIN CENTRODECUSTO CC ON CC.CENTRODECUSTO = T.CENTRODECUSTO and CC.ID_USER = T.ID_USER and  CC.ID_USER =' + IntToStr(Dados.varID_USER) + ' and CC.ID_LANGUAGE = ' + IntToStr(Dados.varID_Language));
+      sqlRelat01.SQL.Add('  LEFT OUTER JOIN CENTRODECUSTO CC ON CC.CENTRODECUSTO = T.CENTRODECUSTO  AND T.CATEGORIA = CC.CATEGORIA  and CC.ID_USER = T.ID_USER and  CC.ID_USER =' + IntToStr(Dados.varID_USER) + ' and CC.ID_LANGUAGE = ' + IntToStr(Dados.varID_Language));
       sqlRelat01.SQL.Add(' 	WHERE  1 = 1  ');
       sqlRelat01.SQL.Add(' 	&WHERE6 ');
       sqlRelat01.SQL.Add(' 	&WHERE7 ');
@@ -834,12 +1041,11 @@ begin
 
     if Forecast = False then
     begin
-
-      sqlRelat01.SQL.Add(' SELECT  ''R'' AS SOURCE, CC.GRUPO, T.CENTRODECUSTO [' + Dados.RetornaMensagem('MEN_CENTROCUSTO') + '] ');
+      sqlRelat01.SQL.Add(' SELECT  ''R'' AS SOURCE, CC.GRUPO, T.CENTRODECUSTO [' + UpperCase(Dados.RetornaMensagem('MEN_CENTROCUSTO')) + '], T.CATEGORIA ');
       sqlRelat01.SQL.Add( varMesesComLabel );
       sqlRelat01.SQL.Add( ',SUM(COALESCE(VALOR,0)) AS Total ' );
       sqlRelat01.SQL.Add(' 	FROM TBTRANSACAO T   ');
-      sqlRelat01.SQL.Add('  LEFT OUTER JOIN CENTRODECUSTO CC ON CC.CENTRODECUSTO = T.CENTRODECUSTO  and CC.ID_USER = T.ID_USER and  CC.ID_USER =' + IntToStr(Dados.varID_USER) + ' and CC.ID_LANGUAGE = ' + IntToStr(Dados.varID_Language));
+      sqlRelat01.SQL.Add('  INNER JOIN CENTRODECUSTO CC ON CC.CENTRODECUSTO = T.CENTRODECUSTO  AND CC.CATEGORIA = T.CATEGORIA  and CC.ID_USER = T.ID_USER and  CC.ID_USER =' + IntToStr(Dados.varID_USER) + ' and CC.ID_LANGUAGE = ' + IntToStr(Dados.varID_Language));
       sqlRelat01.SQL.Add(' 	WHERE  1 = 1  ');
       sqlRelat01.SQL.Add('  &WHERE1  ');
       sqlRelat01.SQL.Add('  &WHERE2  ');
@@ -847,21 +1053,19 @@ begin
       sqlRelat01.SQL.Add('  AND T.FORECAST = 0 ');
       sqlRelat01.SQL.Add(' 	&WHERE4 ');
       sqlRelat01.SQL.Add(' 	&WHERE5 ');
-      sqlRelat01.SQL.Add(' 	GROUP BY T.CENTRODECUSTO, CAST(DATATRANSACAO   AS DATE)  ');
-      sqlRelat01.SQL.Add(' 	ORDER BY CC.GRUPO   ');
-
+      sqlRelat01.SQL.Add(' 	GROUP BY  CC.GRUPO, [Cost Center], T.CATEGORIA  ');
+      sqlRelat01.SQL.Add(' ORDER BY CC.GRUPO  ASC ');
 
       //sqlRelat01.SQL.SaveToFile('C:\BIBanco\Relatorio_SQLITE_ForecastFalse.sql');
 
     end
     else if Forecast then
     begin
-
-      sqlRelat01.SQL.Add(' SELECT  ''R'' AS SOURCE, CC.GRUPO, T.CENTRODECUSTO [' + Dados.RetornaMensagem('MEN_CENTROCUSTO') + '] ');
+      sqlRelat01.SQL.Add(' SELECT  ''F'' AS SOURCE, CC.GRUPO, T.CENTRODECUSTO [' + UpperCase(Dados.RetornaMensagem('MEN_CENTROCUSTO')) + '], T.CATEGORIA ');
       sqlRelat01.SQL.Add( varMesesComLabel );
       sqlRelat01.SQL.Add( ',SUM(COALESCE(VALOR,0)) AS Total ' );
       sqlRelat01.SQL.Add(' 	FROM TBTRANSACAO T   ');
-      sqlRelat01.SQL.Add('  LEFT OUTER JOIN CENTRODECUSTO CC ON CC.CENTRODECUSTO = T.CENTRODECUSTO and CC.ID_USER = T.ID_USER and   CC.ID_USER =' + IntToStr(Dados.varID_USER) + ' and CC.ID_LANGUAGE = ' + IntToStr(Dados.varID_Language));
+      sqlRelat01.SQL.Add('  LEFT OUTER JOIN CENTRODECUSTO CC ON CC.CENTRODECUSTO = T.CENTRODECUSTO  AND T.CATEGORIA = CC.CATEGORIA and CC.ID_USER = T.ID_USER and   CC.ID_USER =' + IntToStr(Dados.varID_USER) + ' and CC.ID_LANGUAGE = ' + IntToStr(Dados.varID_Language));
       sqlRelat01.SQL.Add(' 	WHERE  1 = 1  ');
       sqlRelat01.SQL.Add('  &WHERE1  ');
       sqlRelat01.SQL.Add('  &WHERE2  ');
@@ -869,8 +1073,8 @@ begin
       sqlRelat01.SQL.Add('  AND T.FORECAST = 1 ');
       sqlRelat01.SQL.Add(' 	&WHERE4 ');
       sqlRelat01.SQL.Add(' 	&WHERE5 ');
-      sqlRelat01.SQL.Add(' 	GROUP BY T.CENTRODECUSTO, CAST(DATATRANSACAO   AS DATE)  ');
-      sqlRelat01.SQL.Add(' 	ORDER BY CC.GRUPO   ');
+      sqlRelat01.SQL.Add(' GROUP BY   GRUPO, T.CENTRODECUSTO, T.CATEGORIA ');
+      sqlRelat01.SQL.Add(' ORDER BY CC.GRUPO ASC  ');
 
       //sqlRelat01.SQL.SaveToFile('C:\BIBanco\Relatorio_SQLITE_ForecastTrue.sql');
 
@@ -900,7 +1104,7 @@ begin
 
    end;
 
-    sqlRelat01.Open;
+   sqlRelat01.Open;
 
 
     AddColumn;
@@ -1137,8 +1341,14 @@ begin
     AColumn.DataBinding.FieldName := sqlRelat01.Fields[2].FieldName;
     AColumn.Position.BandIndex := 0;
 
+    AColumn := cxGrid1DBBandedTableView1.CreateColumn;
+    AColumn.Width := 120;
+    AColumn.Caption := '';
+    AColumn.DataBinding.FieldName := sqlRelat01.Fields[3].FieldName;
+    AColumn.Position.BandIndex := 0;
 
-    for I := 3 to sqlRelat01.FieldList.Count  - 1  do
+
+    for I := 4 to sqlRelat01.FieldList.Count  - 1  do
     begin
 
         AColumn := cxGrid1DBBandedTableView1.CreateColumn;
@@ -1389,20 +1599,20 @@ begin
                                                                                                                                                                             //sqlRelat01.SQL.Add(', CAST(SUM(COALESCE(VALOR,0)) AS NUMERIC(12,2)) AS Total ');
      if bLabel then
      begin
- 		     Case Mes Of
-             1   : MesFiscal :=  ',CASE WHEN strftime(''%m'', DATATRANSACAO) == ''' + ZeroLeft(IntToStr(Mes),2)+ ''' AND strftime(''%Y'', DATATRANSACAO) == ''' + IntToStr(ano) + ''' THEN  CAST(SUM(COALESCE(VALOR,0)) AS NUMERIC(12,2)) END AS ' +  strFormatDate;
-             2   : MesFiscal :=  ',CASE WHEN strftime(''%m'', DATATRANSACAO) == ''' + ZeroLeft(IntToStr(Mes),2)+ ''' AND strftime(''%Y'', DATATRANSACAO) == ''' + IntToStr(ano) + ''' THEN  CAST(SUM(COALESCE(VALOR,0)) AS NUMERIC(12,2)) END AS ' +  strFormatDate;
-             3   : MesFiscal :=  ',CASE WHEN strftime(''%m'', DATATRANSACAO) == ''' + ZeroLeft(IntToStr(Mes),2)+ ''' AND strftime(''%Y'', DATATRANSACAO) == ''' + IntToStr(ano) + ''' THEN  CAST(SUM(COALESCE(VALOR,0)) AS NUMERIC(12,2)) END AS ' +  strFormatDate;
-             4   : MesFiscal :=  ',CASE WHEN strftime(''%m'', DATATRANSACAO) == ''' + ZeroLeft(IntToStr(Mes),2)+ ''' AND strftime(''%Y'', DATATRANSACAO) == ''' + IntToStr(ano) + ''' THEN  CAST(SUM(COALESCE(VALOR,0)) AS NUMERIC(12,2)) END AS ' +  strFormatDate;
-             5   : MesFiscal :=  ',CASE WHEN strftime(''%m'', DATATRANSACAO) == ''' + ZeroLeft(IntToStr(Mes),2)+ ''' AND strftime(''%Y'', DATATRANSACAO) == ''' + IntToStr(ano) + ''' THEN  CAST(SUM(COALESCE(VALOR,0)) AS NUMERIC(12,2)) END AS ' +  strFormatDate;
-             6   : MesFiscal :=  ',CASE WHEN strftime(''%m'', DATATRANSACAO) == ''' + ZeroLeft(IntToStr(Mes),2)+ ''' AND strftime(''%Y'', DATATRANSACAO) == ''' + IntToStr(ano) + ''' THEN  CAST(SUM(COALESCE(VALOR,0)) AS NUMERIC(12,2)) END AS ' +  strFormatDate;
-             7   : MesFiscal :=  ',CASE WHEN strftime(''%m'', DATATRANSACAO) == ''' + ZeroLeft(IntToStr(Mes),2)+ ''' AND strftime(''%Y'', DATATRANSACAO) == ''' + IntToStr(ano) + ''' THEN  CAST(SUM(COALESCE(VALOR,0)) AS NUMERIC(12,2)) END AS ' +  strFormatDate;
-             8   : MesFiscal :=  ',CASE WHEN strftime(''%m'', DATATRANSACAO) == ''' + ZeroLeft(IntToStr(Mes),2)+ ''' AND strftime(''%Y'', DATATRANSACAO) == ''' + IntToStr(ano) + ''' THEN  CAST(SUM(COALESCE(VALOR,0)) AS NUMERIC(12,2)) END AS ' +  strFormatDate;
-             9   : MesFiscal :=  ',CASE WHEN strftime(''%m'', DATATRANSACAO) == ''' + ZeroLeft(IntToStr(Mes),2)+ ''' AND strftime(''%Y'', DATATRANSACAO) == ''' + IntToStr(ano) + ''' THEN  CAST(SUM(COALESCE(VALOR,0)) AS NUMERIC(12,2)) END AS ' +  strFormatDate;
-             10  : MesFiscal :=  ',CASE WHEN strftime(''%m'', DATATRANSACAO) == ''' + ZeroLeft(IntToStr(Mes),2)+ ''' AND strftime(''%Y'', DATATRANSACAO) == ''' + IntToStr(ano) + ''' THEN  CAST(SUM(COALESCE(VALOR,0)) AS NUMERIC(12,2)) END AS ' +  strFormatDate;
-             11  : MesFiscal :=  ',CASE WHEN strftime(''%m'', DATATRANSACAO) == ''' + ZeroLeft(IntToStr(Mes),2)+ ''' AND strftime(''%Y'', DATATRANSACAO) == ''' + IntToStr(ano) + ''' THEN  CAST(SUM(COALESCE(VALOR,0)) AS NUMERIC(12,2)) END AS ' +  strFormatDate;
-             12  : MesFiscal :=  ',CASE WHEN strftime(''%m'', DATATRANSACAO) == ''' + ZeroLeft(IntToStr(Mes),2)+ ''' AND strftime(''%Y'', DATATRANSACAO) == ''' + IntToStr(ano) + ''' THEN  CAST(SUM(COALESCE(VALOR,0)) AS NUMERIC(12,2)) END AS ' +  strFormatDate;
-         End ;
+ 		   Case Mes Of
+             1   : MesFiscal :=  ',SUM(CASE WHEN strftime(''%m'', DATATRANSACAO) == ''' + ZeroLeft(IntToStr(Mes),2)+ ''' AND strftime(''%Y'', DATATRANSACAO) == ''' + IntToStr(ano) + ''' THEN  CAST(COALESCE(VALOR,0) AS decimal) END) AS ' +  strFormatDate;
+             2   : MesFiscal :=  ',SUM(CASE WHEN strftime(''%m'', DATATRANSACAO) == ''' + ZeroLeft(IntToStr(Mes),2)+ ''' AND strftime(''%Y'', DATATRANSACAO) == ''' + IntToStr(ano) + ''' THEN  CAST(COALESCE(VALOR,0) AS decimal) END) AS ' +  strFormatDate;
+             3   : MesFiscal :=  ',SUM(CASE WHEN strftime(''%m'', DATATRANSACAO) == ''' + ZeroLeft(IntToStr(Mes),2)+ ''' AND strftime(''%Y'', DATATRANSACAO) == ''' + IntToStr(ano) + ''' THEN  CAST(COALESCE(VALOR,0) AS decimal) END) AS ' +  strFormatDate;
+             4   : MesFiscal :=  ',SUM(CASE WHEN strftime(''%m'', DATATRANSACAO) == ''' + ZeroLeft(IntToStr(Mes),2)+ ''' AND strftime(''%Y'', DATATRANSACAO) == ''' + IntToStr(ano) + ''' THEN  CAST(COALESCE(VALOR,0) AS decimal) END) AS ' +  strFormatDate;
+             5   : MesFiscal :=  ',SUM(CASE WHEN strftime(''%m'', DATATRANSACAO) == ''' + ZeroLeft(IntToStr(Mes),2)+ ''' AND strftime(''%Y'', DATATRANSACAO) == ''' + IntToStr(ano) + ''' THEN  CAST(COALESCE(VALOR,0) AS decimal) END) AS ' +  strFormatDate;
+             6   : MesFiscal :=  ',SUM(CASE WHEN strftime(''%m'', DATATRANSACAO) == ''' + ZeroLeft(IntToStr(Mes),2)+ ''' AND strftime(''%Y'', DATATRANSACAO) == ''' + IntToStr(ano) + ''' THEN  CAST(COALESCE(VALOR,0) AS decimal) END) AS ' +  strFormatDate;
+             7   : MesFiscal :=  ',SUM(CASE WHEN strftime(''%m'', DATATRANSACAO) == ''' + ZeroLeft(IntToStr(Mes),2)+ ''' AND strftime(''%Y'', DATATRANSACAO) == ''' + IntToStr(ano) + ''' THEN  CAST(COALESCE(VALOR,0) AS decimal) END) AS ' +  strFormatDate;
+             8   : MesFiscal :=  ',SUM(CASE WHEN strftime(''%m'', DATATRANSACAO) == ''' + ZeroLeft(IntToStr(Mes),2)+ ''' AND strftime(''%Y'', DATATRANSACAO) == ''' + IntToStr(ano) + ''' THEN  CAST(COALESCE(VALOR,0) AS decimal) END) AS ' +  strFormatDate;
+             9   : MesFiscal :=  ',SUM(CASE WHEN strftime(''%m'', DATATRANSACAO) == ''' + ZeroLeft(IntToStr(Mes),2)+ ''' AND strftime(''%Y'', DATATRANSACAO) == ''' + IntToStr(ano) + ''' THEN  CAST(COALESCE(VALOR,0) AS decimal) END) AS ' +  strFormatDate;
+             10  : MesFiscal :=  ',SUM(CASE WHEN strftime(''%m'', DATATRANSACAO) == ''' + ZeroLeft(IntToStr(Mes),2)+ ''' AND strftime(''%Y'', DATATRANSACAO) == ''' + IntToStr(ano) + ''' THEN  CAST(COALESCE(VALOR,0) AS decimal) END) AS ' +  strFormatDate;
+             11  : MesFiscal :=  ',SUM(CASE WHEN strftime(''%m'', DATATRANSACAO) == ''' + ZeroLeft(IntToStr(Mes),2)+ ''' AND strftime(''%Y'', DATATRANSACAO) == ''' + IntToStr(ano) + ''' THEN  CAST(COALESCE(VALOR,0) AS decimal) END) AS ' +  strFormatDate;
+             12  : MesFiscal :=  ',SUM(CASE WHEN strftime(''%m'', DATATRANSACAO) == ''' + ZeroLeft(IntToStr(Mes),2)+ ''' AND strftime(''%Y'', DATATRANSACAO) == ''' + IntToStr(ano) + ''' THEN  CAST(COALESCE(VALOR,0) AS decimal) END) AS ' +  strFormatDate;
+       End ;
 
        if SomarLinha then
        begin
@@ -1447,9 +1657,7 @@ begin
               varMesAnterior[0]  := MesFiscalAnterior;
               varIMes[0]         := ZeroLeft(IntToStr(Mes),2);
               varIMesAnterior[0] := ZeroLeft(IntToStr(MesAnterior),2);
-
               MesFiscalAnterior := 'SUM(CASE WHEN ((strftime(''%m'', DATATRANSACAO) == ''' + varIMes[0] +''') AND (strftime(''%Y'', DATATRANSACAO) == ''' + IntToStr(Ano) + ''')) THEN  COALESCE(VALOR,0) END) AS ' + varMesAnterior[0] + ',';
-
               VarSum[0]         := '((strftime(''%m'', DATATRANSACAO) == ''' + varIMes[0] +''') AND (strftime(''%Y'', DATATRANSACAO) == ''' + IntToStr(Ano) + ''')) || ';
             end
             else
@@ -1462,14 +1670,14 @@ begin
                                                                                                                                                                                             // 'CAST(COALESCE(VALOR,0) AS NUMERIC(12,2))
               Case Mes Of
                    1   : MesFiscalAnterior :=
-                        'SUM(CASE  WHEN ' + VarSum[0] + '((strftime(''%m'', DATATRANSACAO) == ''' + varIMes[1] + ''') AND (strftime(''%Y'', DATATRANSACAO) == ''' + IntToStr(ano) + ''')) THEN CAST(COALESCE(VALOR,0) AS NUMERIC(15,2))  END) AS ' + varMesAnterior[1]+ ',';
+                        'SUM(CASE  WHEN ' + VarSum[0] + '((strftime(''%m'', DATATRANSACAO) == ''' + varIMes[1] + ''') AND (strftime(''%Y'', DATATRANSACAO) == ''' + IntToStr(ano) + ''')) THEN COALESCE(VALOR,0)  END) AS ' + varMesAnterior[1]+ ',';
 
 
                    2   : MesFiscalAnterior :=
-                        'SUM(CASE  WHEN ' + VarSum[0] + VarSum[1] + '((strftime(''%m'', DATATRANSACAO) == ''' +  varIMes[2] + ''') AND (strftime(''%Y'', DATATRANSACAO) == ''' + IntToStr(ano) + ''')) THEN CAST(COALESCE(VALOR,0) AS NUMERIC(15,2)) END) AS ' + varMesAnterior[2]+ ',';
+                        'SUM(CASE  WHEN ' + VarSum[0] + VarSum[1] + '((strftime(''%m'', DATATRANSACAO) == ''' +  varIMes[2] + ''') AND (strftime(''%Y'', DATATRANSACAO) == ''' + IntToStr(ano) + ''')) THEN COALESCE(VALOR,0)  END) AS ' + varMesAnterior[2]+ ',';
 
                    3   : MesFiscalAnterior :=
-                         'SUM(CASE  WHEN ' + VarSum[0] + VarSum[1] + VarSum[2] + '((strftime(''%m'', DATATRANSACAO) == ''' +  varIMes[3] + ''') AND (strftime(''%Y'', DATATRANSACAO) == ''' + IntToStr(ano) + ''')) THEN CAST(COALESCE(VALOR,0) AS NUMERIC(15,2)) END) AS ' + varMesAnterior[3]+ ',';
+                         'SUM(CASE  WHEN ' + VarSum[0] + VarSum[1] + VarSum[2] + '((strftime(''%m'', DATATRANSACAO) == ''' +  varIMes[3] + ''') AND (strftime(''%Y'', DATATRANSACAO) == ''' + IntToStr(ano) + ''')) THEN COALESCE(VALOR,0) END) AS ' + varMesAnterior[3]+ ',';
 
                    4   : MesFiscalAnterior :=
                         'SUM(CASE  WHEN ' + VarSum[0] + VarSum[1] + VarSum[2] + VarSum[3] + '((strftime(''%m'', DATATRANSACAO) == ''' +  varIMes[4] + ''') AND (strftime(''%Y'', DATATRANSACAO) == ''' + IntToStr(ano) + ''')) THEN COALESCE(VALOR,0)  END) AS ' + varMesAnterior[4]+ ',';
@@ -1506,6 +1714,42 @@ begin
 
             MesFiscal :=  MesFiscalAnterior;
        end;
+
+       if TotalLinha then
+       begin
+
+           MesAbrev := StringReplace(MesAbrev,'dez','Dec',[rfReplaceAll, rfIgnoreCase]);
+           MesAbrev := StringReplace(MesAbrev,'set','Sep',[rfReplaceAll, rfIgnoreCase]);
+           MesAbrev := StringReplace(MesAbrev,'abr','Apr',[rfReplaceAll, rfIgnoreCase]);
+           MesAbrev := StringReplace(MesAbrev,'ago','Aug',[rfReplaceAll, rfIgnoreCase]);
+           MesAbrev := StringReplace(MesAbrev,'mai','May',[rfReplaceAll, rfIgnoreCase]);
+           MesAbrev := StringReplace(MesAbrev,'out','Oct',[rfReplaceAll, rfIgnoreCase]);
+           MesAbrev := StringReplace(MesAbrev,'fev','Feb',[rfReplaceAll, rfIgnoreCase]);
+           MesAbrev := StringReplace(MesAbrev,'nov','Nov',[rfReplaceAll, rfIgnoreCase]);
+           MesAbrev := StringReplace(MesAbrev,'jan','Jan',[rfReplaceAll, rfIgnoreCase]);
+           MesAbrev := StringReplace(MesAbrev,'mar','Mar',[rfReplaceAll, rfIgnoreCase]);
+           MesAbrev := StringReplace(MesAbrev,'jun','Jun',[rfReplaceAll, rfIgnoreCase]);
+           MesAbrev := StringReplace(MesAbrev,'jul','Jul',[rfReplaceAll, rfIgnoreCase]);
+
+           MesFiscal :=  '[' + MesAbrev  + ' ' + IntToStr(Ano)  +  ']';
+
+          Case Mes Of
+             1   : MesFiscal := 'Sum(IFNull(' +  MesFiscal + ',0)) as ' + MesFiscal + ',' ;
+             2   : MesFiscal := 'Sum(IFNull(' +  MesFiscal + ',0)) as ' + MesFiscal + ',' ;
+             3   : MesFiscal := 'Sum(IFNull(' +  MesFiscal + ',0)) as ' + MesFiscal + ',' ;
+             4   : MesFiscal := 'Sum(IFNull(' +  MesFiscal + ',0)) as ' + MesFiscal + ',' ;
+             5   : MesFiscal := 'Sum(IFNull(' +  MesFiscal + ',0)) as ' + MesFiscal + ',' ;
+             6   : MesFiscal := 'Sum(IFNull(' +  MesFiscal + ',0)) as ' + MesFiscal + ',' ;
+             7   : MesFiscal := 'Sum(IFNull(' +  MesFiscal + ',0)) as ' + MesFiscal + ',' ;
+             8   : MesFiscal := 'Sum(IFNull(' +  MesFiscal + ',0)) as ' + MesFiscal + ',' ;
+             9   : MesFiscal := 'Sum(IFNull(' +  MesFiscal + ',0)) as ' + MesFiscal + ',' ;
+             10  : MesFiscal := 'Sum(IFNull(' +  MesFiscal + ',0)) as ' + MesFiscal + ',' ;
+             11  : MesFiscal := 'Sum(IFNull(' +  MesFiscal + ',0)) as ' + MesFiscal + ',' ;
+             12  : MesFiscal := 'Sum(IFNull(' +  MesFiscal + ',0)) as ' + MesFiscal + ',' ;
+         End ;
+       end;
+
+
      end
      else
      begin
@@ -1526,6 +1770,9 @@ begin
 
      end;
 
+
+
+
    end;
    Result :=  MesFiscal;
 
@@ -1541,19 +1788,7 @@ begin
 end;
 
 
-procedure TfrmTransacao.FormClose(Sender: TObject; var Action: TCloseAction);
-begin
-   cxGrid1DBBandedTableView1.ClearItems;
-   if ABand <> Nil then
-   begin
-       ABand.Bands.Clear;
-   end;
-
-  frmTransacao := nil;
-  Action := caFree;
-end;
-
-procedure TfrmTransacao.FormCreate(Sender: TObject);
+procedure TfrmTransacao.FormActivate(Sender: TObject);
 var
  varYear,varYearFuture: String;
  varDataAtual : TDateTime;
@@ -1587,6 +1822,20 @@ begin
      RelatorioCentroCustoSQLITE(chkForecast.Checked, chkBalance.Checked);
    end;
 
+   cboAnoBase.SetFocus;
+
+end;
+
+procedure TfrmTransacao.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+   cxGrid1DBBandedTableView1.ClearItems;
+   if ABand <> Nil then
+   begin
+       ABand.Bands.Clear;
+   end;
+
+  frmTransacao := nil;
+  Action := caFree;
 end;
 
 procedure TfrmTransacao.ListaBancos;
@@ -1602,6 +1851,7 @@ begin
   sqlBank.Open;
   sqlBank.First;
   cboBank.Items.Clear;
+  cboBank.Items.Add('');
   while not sqlBank.Eof do
   begin
       cboBank.Items.AddObject(sqlBank.FieldByName('NAME').AsString + '-' + sqlBank.FieldByName('APELIDO').AsString , TObject(sqlBank.FieldByName('ID_USERBANK').AsInteger ));

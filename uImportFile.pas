@@ -26,7 +26,7 @@ uses
   FireDAC.DApt, Data.DB, FireDAC.Comp.DataSet, FireDAC.Comp.Client, Vcl.DBCtrls,
   Vcl.ComCtrls, Vcl.Menus, dxCore, cxDateUtils, cxDropDownEdit, cxCalendar,
   cxButtons, Datasnap.Provider, Datasnap.DBClient, Data.SqlTimSt, Vcl.Grids,
-  Vcl.DBGrids ;
+  Vcl.DBGrids;
 
 type
   TfrmImportFile = class(TForm)
@@ -54,25 +54,26 @@ type
     chkEmail: TCheckBox;
     cboBank: TComboBox;
     DataSource1: TDataSource;
+    StatusBar: TStatusBar;
     procedure EdtCaminhoClick(Sender: TObject);
-
-    procedure FormCreate(Sender: TObject);
     procedure btnImportarClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure chkEmailClick(Sender: TObject);
     procedure cboBankChange(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure butCancelClick(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
   private
     dtImportLastDate, dtTransactionDate : TDateTime;
     Texto,Linha, Saida : TStringList;
-    varNome, varTipo, varDataTransacao, varFavorecido, varCategoria, varSubCategoria, varTempCategoria, varCentrodeCusto :string;
+    varNome, varTipo, varDataTransacao, varFavorecido, varCategoria, varSubCategoria, varTempCategoria, varCentrodeCusto,
+    varCategoriaDoSistema :string;
+
     varValor : String;
     Idx: Integer;
     varCaminhoBackup : String;
     procedure ContaSynovus;
     procedure ApagaRegistro;
-    procedure CadastraCategoria;
     function ValidaCategoria : String;
     procedure LimpaVariavel;
     procedure ContaDiscovery;
@@ -97,7 +98,41 @@ procedure TfrmImportFile.EdtCaminhoClick(Sender: TObject);
 begin
    if OpenDialog.Execute then
    begin
-     EdtCaminho.Text := OpenDialog.FileName;
+      EdtCaminho.Text := OpenDialog.FileName;
+
+      sqlAux.Close;
+      sqlAux.SQL.Clear;
+      if Dados.varBanco = '1' then
+        sqlAux.SQL.Add('Select Max(DATA_ULTIMA_LEITURA) as  DataTransacao From TBARQUIVO where NOME = :NOME AND id_user = :id_user ')
+      else if Dados.varBanco = '2' then
+        sqlAux.SQL.Add('Select cast(DATA_ULTIMA_LEITURA as varchar) as DataTransacao From TBARQUIVO where NOME = :NOME AND id_user = :id_user  ');
+
+      sqlAux.SQL.Add(' AND  ID_USERBANK = :ID_USERBANK');
+
+      sqlAux.Params.ParamByName('ID_USER').AsInteger    := Dados.varID_USER;
+      sqlAux.Params.ParamByName('NOME').AsString        := ExtractFileName(EdtCaminho.Text);
+
+      sqlAux.Params.ParamByName('ID_USERBANK').AsInteger :=Integer(cboBank.Items.Objects[Idx]);
+
+
+      if Dados.varBanco = '2' then
+         sqlAux.SQL.Add(' order by cast(DATA_ULTIMA_LEITURA as varchar) desc LIMIT 1;');
+
+      //sqlAux.SQL.SaveToFile('c:\BIBanco\UltimoImport.sql');
+
+      sqlAux.Open;
+
+      if not sqlAux.IsEmpty then
+      begin
+        lblImpLastDate.Caption := sqlAux.FieldByName('DataTransacao').AsString;
+        dtImportLastDate       := VarToDateTime(sqlAux.FieldByName('DataTransacao').AsString);
+      end
+      else lblImpLastDate.Caption := 'Data not found';
+
+      sqlAux.Close;
+
+
+
      LeituraDoArquivo;
    end;
 end;
@@ -130,7 +165,7 @@ begin
       end;
       dtFileStartDate.Date  :=  StrToDate( FormatDateTime(FormatSettings.ShortDateFormat, StrToDate(varDataInicial)) ); //StrToDate(varDataInicial);
 
-      varDataFinal          := FormatDateTime(FormatSettings.ShortDateFormat, ParseDateFromDB(Str_Pal(varFile.Strings[2],1,';'),Dados.varID_Bank));
+      varDataFinal          := FormatDateTime(FormatSettings.ShortDateFormat, ParseDateFromDB(Str_Pal(varFile.Strings[0],1,';'),Dados.varID_Bank));
 
       if Idx <> -1 then
       begin
@@ -146,15 +181,8 @@ begin
 
 end;
 
-procedure TfrmImportFile.FormClose(Sender: TObject; var Action: TCloseAction);
+procedure TfrmImportFile.FormActivate(Sender: TObject);
 begin
-  frmImportFile := nil;
-  Action := caFree;
-end;
-
-procedure TfrmImportFile.FormCreate(Sender: TObject);
-begin
-
   Dados.ConectarNoBanco;
 
   Caption                := Dados.RetornaMensagem('MEN_IMPORTFILE');
@@ -186,8 +214,14 @@ begin
   end;
 
   idx := -1;
+  cboBank.SetFocus;
 
+end;
 
+procedure TfrmImportFile.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  frmImportFile := nil;
+  Action := caFree;
 end;
 
 procedure TfrmImportFile.FormKeyDown(Sender: TObject; var Key: Word;
@@ -231,19 +265,16 @@ end;
 
 function TfrmImportFile.ValidaCategoria : String;
 var
- varIDCentrodeCusto, varIdLanguage : Integer;
+ varIDCentrodeCusto : Integer;
  varSQL : String;
  idx : Integer;
-begin
-   sqlAux.Close;
-   sqlAux.SQL.Clear;
-   sqlAux.SQL.Add('SELECT * FROM TBLANGUAGE WHERE ID_LANGUAGE = 1 ORDER BY ID_LANGUAGE');
-   sqlAux.Open;
-   sqlAux.First;
-   varIdLanguage := sqlAux.FieldByName('ID_LANGUAGE').AsInteger;
 
-   varSQL := '';
-   varIDCentrodeCusto := 0;
+begin
+
+  varSQL := '';
+  varIDCentrodeCusto := 0;
+  varCategoriaDoSistema := '';
+  {
   if ((varSubCategoria <> '') and (varFavorecido <> 'Maplebear Inc')) then
   begin
     if UpperCase(varSubCategoria) = 'FUEL' Then
@@ -267,7 +298,7 @@ begin
        sqlAux.SQL.Clear;
        sqlAux.SQL.Add(Trim(varSQL));
        sqlAux.Params.ParamByName('ID_USER').AsInteger     := Dados.varID_USER;
-       sqlAux.Params.ParamByName('ID_LANGUAGE').AsInteger := varIdLanguage;
+       sqlAux.Params.ParamByName('ID_LANGUAGE').AsInteger := Dados.varID_Language;
 
        sqlAux.Open;
        if not sqlAux.IsEmpty then
@@ -279,19 +310,22 @@ begin
   end
   else
   begin
-
+  }
       sqlAux.Close;
       sqlAux.SQL.Clear;
-      sqlAux.SQL.Add('SELECT C.CATEGORIA,  C.ID_CENTRODECUSTO, CC.CENTRODECUSTO FROM TBCATEGORIA C  ');
+      sqlAux.SQL.Add('SELECT CC.CATEGORIA,  CC.ID_CENTRODECUSTO, CC.CENTRODECUSTO ');
+      sqlAux.SQL.Add(' FROM TBCATEGORIA C  ');
       sqlAux.SQL.Add(' LEFT OUTER JOIN CENTRODECUSTO CC ON CC.ID_CENTRODECUSTO =  C.ID_CENTRODECUSTO ');
-      sqlAux.SQL.Add(' Where C.Favorecido = :Favorecido and  C.Categoria = :Categoria and C.ID_LANGUAGE = :ID_LANGUAGE ');
-      sqlAux.Params.ParamByName('Favorecido').AsString := varFavorecido;
-      sqlAux.Params.ParamByName('ID_LANGUAGE').AsInteger := 1;  // Somente Ingles
+      sqlAux.SQL.Add(' and CC.CATEGORIA = C.CATEGORIA   ');
+      sqlAux.SQL.Add(' Where C.Favorecido = :Favorecido and  C.SubCategoria = :SubCategoria and C.ID_LANGUAGE = :ID_LANGUAGE and C.ID_USER = :ID_USER ');
+      sqlAux.Params.ParamByName('Favorecido').AsString   := varFavorecido;
+      sqlAux.Params.ParamByName('ID_LANGUAGE').AsInteger := Dados.varID_Language;
+      sqlAux.Params.ParamByName('ID_USER').AsInteger     := Dados.varID_USER;
 
 
       if varSubCategoria <> '' then
-        sqlAux.Params.ParamByName('Categoria').AsString := varCategoria + '_' + varSubCategoria
-      else sqlAux.Params.ParamByName('Categoria').AsString := varCategoria;
+        sqlAux.Params.ParamByName('SubCategoria').AsString :=  varSubCategoria
+      else sqlAux.Params.ParamByName('SubCategoria').AsString := varCategoria;
 
       sqlAux.Open;
 
@@ -299,11 +333,14 @@ begin
       begin
        Try
          Application.CreateForm(TfrmVincularCentroCusto, frmVincularCentroCusto);
+         frmVincularCentroCusto.BuscaCentroCusto(StrToFloat(varValor));
          frmVincularCentroCusto.butDelete.Visible := False;
          frmVincularCentroCusto.lblFavorecido.Caption := varFavorecido;
+
          if varSubCategoria <> '' then
-           frmVincularCentroCusto.lblCategoria.Caption := varCategoria + '_' + varSubCategoria
+           frmVincularCentroCusto.lblCategoria.Caption := varSubCategoria
          else  frmVincularCentroCusto.lblCategoria.Caption := varCategoria ;
+
          frmVincularCentroCusto.lblValor.Caption := varValor; // FloatToStr(varValor);
          frmVincularCentroCusto.lblDataCompra.Caption := varDataTransacao;
          frmVincularCentroCusto.bAlterar := False;
@@ -311,9 +348,20 @@ begin
 
          if frmVincularCentroCusto.ModalResult = mrOk  then
          begin
-            idx := frmVincularCentroCusto.cboCC.ItemIndex;
-            varCentrodeCusto   := frmVincularCentroCusto.cboCC.Text;
-            varIDCentrodeCusto := Integer(frmVincularCentroCusto.cboCC.Items.Objects[Idx]);
+         {   idx := frmVincularCentroCusto.cboCC.ItemIndex;
+
+            if  Pos('-', frmVincularCentroCusto.cboCC.Text) <> 0 then
+               varCentrodeCusto   := Trim(Str_Pal(frmVincularCentroCusto.cboCC.Text,1,'-'))
+            else    varCentrodeCusto   := frmVincularCentroCusto.cboCC.Text;
+
+            if  Pos('-', frmVincularCentroCusto.cboCC.Text) <> 0 then
+              varCategoriaDoSistema := Trim(Str_Pal(frmVincularCentroCusto.cboCC.Text,2,'-'));
+         }
+            varIDCentrodeCusto := frmVincularCentroCusto.sqlCentroCusto.FieldByName('ID_CENTRODECUSTO').AsInteger;
+
+            varCentrodeCusto      := frmVincularCentroCusto.sqlCentroCusto.FieldByName('CENTRODECUSTO').AsString;
+            varCategoriaDoSistema := frmVincularCentroCusto.sqlCentroCusto.FieldByName('CATEGORIA').AsString;
+
          end
          else
          begin
@@ -325,23 +373,32 @@ begin
 
       end
       else
-        varCentrodeCusto := sqlAux.FieldByName('CENTRODECUSTO').AsString ;
-  end;
-
+      begin
+        varCentrodeCusto      := sqlAux.FieldByName('CENTRODECUSTO').AsString ;
+        varCategoriaDoSistema := sqlAux.FieldByName('CATEGORIA').AsString ;
+      end;
+  //end;
+  {
   if varIDCentrodeCusto > 0  then
   begin
       sqlAux2.Close;
       sqlAux2.SQL.Clear;
       sqlAux2.SQL.Add('Update TBCategoria ');
-      sqlAux2.SQL.Add('Set  ID_CENTRODECUSTO = :ID_CENTRODECUSTO ');
-      sqlAux2.SQL.Add(' Where Favorecido = :Favorecido and Categoria = :Categoria and ID_Language = :ID_Language');
+      sqlAux2.SQL.Add('Set  ID_CENTRODECUSTO = :ID_CENTRODECUSTO, CATEGORIA = :NOVACATEGORIA ');
+      sqlAux2.SQL.Add(' Where Favorecido = :Favorecido  and SubCategoria = :SubCategoria and ID_Language = :ID_Language and ID_USER = :ID_USER');
 
       sqlAux2.Params.ParamByName('ID_CENTRODECUSTO').AsInteger := varIDCentrodeCusto;
+      sqlAux2.Params.ParamByName('NOVACATEGORIA').AsString     := varCategoriaDoSistema;
+
       sqlAux2.Params.ParamByName('Favorecido').AsString        := varFavorecido;
+
       if varSubCategoria <> '' then
-        sqlAux2.Params.ParamByName('Categoria').AsString := varCategoria + '_' + varSubCategoria
-      else sqlAux2.Params.ParamByName('Categoria').AsString := varCategoria;
-        sqlAux2.Params.ParamByName('ID_Language').AsInteger := 1; // Somente em Ingles Dados.varID_Language;
+        sqlAux2.Params.ParamByName('SubCategoria').AsString := varCategoria + '_' + varSubCategoria
+      else sqlAux2.Params.ParamByName('SubCategoria').AsString := varCategoria;
+
+      sqlAux2.Params.ParamByName('ID_Language').AsInteger := Dados.varID_Language;
+      sqlAux2.Params.ParamByName('ID_USER').AsInteger := Dados.varID_USER;
+
 
       Try
         sqlAux2.ExecSQL;
@@ -351,7 +408,7 @@ begin
       end;
   end;
 
-
+   }
   result := varCentrodeCusto;
 
   sqlAux.Close;
@@ -366,8 +423,10 @@ var
   i:integer;
   varValorTemp : String;
   varSelectedIDUserBank : String;
+  varID_Arquivo : Integer;
 begin
  // ApagaRegistro;
+
 
   Texto.Text := stringreplace(Texto.Text, ',', ';', [rfReplaceAll, rfIgnoreCase]);
 
@@ -377,8 +436,9 @@ begin
     Saida.Clear;
     Dados.varTotalLinha := Texto.Count;
     bCancelaVinculaCategoria := False;
-    for i:=1 to Texto.Count - 1 do
+    for i:=0 to Texto.Count - 1 do
     begin
+     StatusBar.Panels[1].Text := 'L: ' + IntToStr(I);
      Dados.varLinha := I;
      Linha.Delimiter:=';';
      Linha.DelimitedText:=Texto[i];
@@ -396,12 +456,17 @@ begin
 
      varFavorecido         :=  Str_Pal(Texto[i],3, ';');
 
-     varTempCategoria      :=  Trim(Str_Pal(Texto[i],4, ';'));
+     varCategoria      :=  Trim(Str_Pal(Texto[i],4, ';'));
+
+     varSubCategoria      :=  Trim(Str_Pal(Texto[i],5, ';'));
+                                                     {
+     if varTempCategoria = '' then
+       varTempCategoria      :=  Trim(Str_Pal(Texto[i],5, ';'));
 
      varSubCategoria       :=  Trim(Str_Pal(varTempCategoria,2, ':'));
 
      varCategoria          :=  Trim(Str_Pal(varTempCategoria,1, ':'));
-
+                                                      }
      varValorTemp          :=   Str_Pal(Texto[i],6, ';');
      if varValorTemp <> '' then
      begin
@@ -425,7 +490,6 @@ begin
 
      end;
 
-     CadastraCategoria;
 
      ValidaCategoria;
 
@@ -456,7 +520,7 @@ begin
      sqlConsulta.Params.ParamByName('Tipo').AsString          :=  varTipo;
      sqlConsulta.Params.ParamByName('DataTransacao').AsSQLTimeStamp  := DateTimeToSQLTimeStamp(dtTransactionDate);
      sqlConsulta.Params.ParamByName('Favorecido').AsString    :=  Trim(varFavorecido);
-     sqlConsulta.Params.ParamByName('Categoria').AsString     :=  Trim(varCategoria);
+     sqlConsulta.Params.ParamByName('Categoria').AsString     :=  Trim(varCategoriaDoSistema);
      sqlConsulta.Params.ParamByName('SubCategoria').AsString  :=  Trim(varSubCategoria);
      sqlConsulta.Params.ParamByName('MODO').AsString  :=  'I';
 
@@ -474,7 +538,7 @@ begin
          sqlAux.Params.ParamByName('Tipo').AsString :=  varTipo;
          sqlAux.Params.ParamByName('DataTransacao').AsSQLTimeStamp  := DateTimeToSQLTimeStamp(dtTransactionDate);
          sqlAux.Params.ParamByName('Favorecido').AsString := Trim(varFavorecido);
-         sqlAux.Params.ParamByName('Categoria').AsString :=  Trim(varCategoria);
+         sqlAux.Params.ParamByName('Categoria').AsString :=  Trim(varCategoriaDoSistema);
          sqlAux.Params.ParamByName('SubCategoria').AsString :=  Trim(varSubCategoria);
          sqlAux.Params.ParamByName('Valor').AsString :=  varValor;
          sqlAux.Params.ParamByName('CentroDeCusto').AsString := varCentrodeCusto;
@@ -488,6 +552,44 @@ begin
             on E : Exception do
               Mens_MensErro(E.ClassName+' error raised, with message : '+E.Message);
          end;
+     end;
+
+
+     sqlAux.Close;
+     sqlAux.SQL.Clear;
+     sqlAux.SQL.Add('Select * From TBArquivo Where id_user = :id_user and nome = :nome and id_userbank = :id_iserbank');
+     sqlAux.Params.ParamByName('id_user').AsInteger := Dados.varID_USER;
+     sqlAux.Params.ParamByName('nome').AsString := ExtractFileName(EdtCaminho.Text);
+     sqlAux.Params.ParamByName('id_iserbank').AsInteger :=  Integer(cboBank.Items.Objects[Idx]);
+     sqlAux.Open;
+     varID_Arquivo := -1;
+     if not sqlAux.IsEmpty then
+     begin
+        varID_Arquivo := sqlAux.FieldByName('ID_ARQUIVO').AsInteger;
+        sqlAux.Close;
+        sqlAux.SQL.Clear;
+        sqlAux.SQL.Add('Update TBArquivo');
+        sqlAux.SQL.Add(' Set Data_Ultima_Leitura = :Data_Ultima_Leitura');
+        sqlAux.SQL.Add(' Where ID_ARQUIVO = :ID_ARQUIVO');
+        sqlAux.Params.ParamByName('Data_Ultima_Leitura').AsSQLTimeStamp  := DateTimeToSQLTimeStamp(dtTransactionDate);
+        sqlAux.Params.ParamByName('ID_ARQUIVO').AsInteger := varID_Arquivo;
+
+        sqlAux.ExecSQL;
+
+     end
+     else
+     begin
+        sqlAux.Close;
+        sqlAux.SQL.Clear;
+        sqlAux.SQL.Add(' Insert into TBArquivo ( Nome, id_user, id_userbank, Data_Ultima_Leitura )' );
+        sqlAux.SQL.Add(' values ( :Nome, :id_user, :id_userbank, :Data_Ultima_Leitura )');
+        sqlAux.Params.ParamByName('id_user').AsInteger := Dados.varID_USER;
+        sqlAux.Params.ParamByName('nome').AsString := ExtractFileName(EdtCaminho.Text);
+        sqlAux.Params.ParamByName('id_userbank').AsInteger :=  Integer(cboBank.Items.Objects[Idx]);
+        sqlAux.Params.ParamByName('Data_Ultima_Leitura').AsSQLTimeStamp  := DateTimeToSQLTimeStamp(dtTransactionDate);
+
+        sqlAux.ExecSQL;
+
      end;
 
     end;
@@ -615,7 +717,7 @@ begin
         varTipo := 'EXPENSE';
 
 
-     CadastraCategoria;
+     Dados.CadastraCategoria(varFavorecido, varCategoria, varSubCategoria);
 
      ValidaCategoria;
 
@@ -688,38 +790,7 @@ begin
 
 end;
 
-procedure TfrmImportFile.CadastraCategoria;
-begin
-   sqlAux.Close;
-   sqlAux.SQL.Clear;
-   sqlAux.SQL.Add('SELECT * FROM TBLANGUAGE WHERE ID_LANGUAGE = 1 ORDER BY ID_LANGUAGE');
 
-   sqlAux.Open;
-   sqlAux.First;
-   while not sqlAux.Eof do
-   begin
-      sqlAux2.Close;
-      sqlAux2.SQL.Clear;
-      sqlAux2.SQL.Add('Insert Into TBCATEGORIA ( Favorecido, Categoria, ID_Language )');
-      sqlAux2.SQL.Add(' Values ( :Favorecido, :Categoria, :ID_Language )');
-
-      sqlAux2.Params.ParamByName('Favorecido').AsString := varFavorecido;
-      if varSubCategoria <> '' then
-        sqlAux2.Params.ParamByName('Categoria').AsString := varCategoria + '_' + varSubCategoria
-      else sqlAux2.Params.ParamByName('Categoria').AsString := varCategoria;
-
-      sqlAux2.Params.ParamByName('ID_Language').AsInteger := sqlAux.FieldByName('ID_LANGUAGE').AsInteger;
-
-      Try
-         sqlAux2.ExecSQL;
-      except
-
-      end;
-
-      sqlAux.Next;
-
-   end;
-end;
 
 procedure TfrmImportFile.cboBankChange(Sender: TObject);
 var
@@ -743,37 +814,6 @@ begin
            Break;
          end;
       end;
-
-
-      sqlAux.Close;
-      sqlAux.SQL.Clear;
-      if Dados.varBanco = '1' then
-        sqlAux.SQL.Add('Select Max(DataTransacao) as  DataTransacao From TBTRANSACAO where FORECAST = 0 AND MODO = ''I'' and id_user = :id_user ')
-      else if Dados.varBanco = '2' then
-        sqlAux.SQL.Add('Select cast(DataTransacao as varchar) as DataTransacao From TBTRANSACAO WHERE FORECAST = 0 AND MODO = ''I''  AND ID_USER = :ID_USER ');
-
-      sqlAux.SQL.Add(' AND ID_BANKING = :ID_BANKING  AND ID_USERBANK = :ID_USERBANK');
-
-      sqlAux.Params.ParamByName('ID_USER').AsInteger    := Dados.varID_USER;
-      sqlAux.Params.ParamByName('ID_BANKING').AsInteger := Dados.varID_Bank;
-      sqlAux.Params.ParamByName('ID_USERBANK').AsInteger :=Integer(cboBank.Items.Objects[Idx]);
-
-
-      if Dados.varBanco = '2' then
-         sqlAux.SQL.Add(' order by cast(DataTransacao as varchar) desc LIMIT 1;');
-
-      //sqlAux.SQL.SaveToFile('c:\BIBanco\UltimoImport.sql');
-
-      sqlAux.Open;
-
-      if not sqlAux.IsEmpty then
-      begin
-        lblImpLastDate.Caption := sqlAux.FieldByName('DataTransacao').AsString;
-        dtImportLastDate       := VarToDateTime(sqlAux.FieldByName('DataTransacao').AsString);
-      end
-      else lblImpLastDate.Caption := 'Data not found';
-
-      sqlAux.Close;
 
   end;
 end;

@@ -2,7 +2,7 @@ object frmImportFile: TfrmImportFile
   Left = 0
   Top = 0
   Caption = 'Import File'
-  ClientHeight = 328
+  ClientHeight = 388
   ClientWidth = 438
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -16,8 +16,8 @@ object frmImportFile: TfrmImportFile
   OldCreateOrder = False
   Visible = True
   WindowState = wsMaximized
+  OnActivate = FormActivate
   OnClose = FormClose
-  OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   PixelsPerInch = 96
   TextHeight = 13
@@ -25,7 +25,7 @@ object frmImportFile: TfrmImportFile
     Left = 0
     Top = 0
     Width = 438
-    Height = 328
+    Height = 388
     Align = alClient
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -438,6 +438,22 @@ object frmImportFile: TfrmImportFile
       Height = 21
       TabOrder = 0
       OnChange = cboBankChange
+    end
+    object StatusBar: TStatusBar
+      Left = 1
+      Top = 368
+      Width = 436
+      Height = 19
+      Panels = <
+        item
+          Width = 350
+        end
+        item
+          Width = 50
+        end>
+      ExplicitLeft = 120
+      ExplicitTop = 360
+      ExplicitWidth = 0
     end
   end
   object OpenDialog: TOpenDialog

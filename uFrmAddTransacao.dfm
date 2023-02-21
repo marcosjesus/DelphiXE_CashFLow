@@ -14,7 +14,7 @@ object frmAddTransacao: TfrmAddTransacao
   KeyPreview = True
   OldCreateOrder = False
   Position = poDesktopCenter
-  OnCreate = FormCreate
+  OnActivate = FormActivate
   OnKeyDown = FormKeyDown
   PixelsPerInch = 96
   TextHeight = 13
@@ -31,8 +31,8 @@ object frmAddTransacao: TfrmAddTransacao
     Font.Style = []
     ParentFont = False
     TabOrder = 0
+    ExplicitLeft = 56
     ExplicitTop = 47
-    ExplicitHeight = 273
     object lblpagamento: TLabel
       Left = 186
       Top = 8
@@ -87,7 +87,7 @@ object frmAddTransacao: TfrmAddTransacao
     end
     object lblCentroCusto: TLabel
       Left = 56
-      Top = 106
+      Top = 138
       Width = 67
       Height = 16
       Alignment = taRightJustify
@@ -101,7 +101,7 @@ object frmAddTransacao: TfrmAddTransacao
     end
     object lblFavorecido: TLabel
       Left = 56
-      Top = 133
+      Top = 108
       Width = 62
       Height = 16
       Alignment = taRightJustify
@@ -115,7 +115,7 @@ object frmAddTransacao: TfrmAddTransacao
     end
     object lblCategoria: TLabel
       Left = 56
-      Top = 160
+      Top = 168
       Width = 55
       Height = 16
       Alignment = taRightJustify
@@ -129,7 +129,7 @@ object frmAddTransacao: TfrmAddTransacao
     end
     object lblSubCategoria: TLabel
       Left = 56
-      Top = 187
+      Top = 197
       Width = 70
       Height = 16
       Alignment = taRightJustify
@@ -143,7 +143,7 @@ object frmAddTransacao: TfrmAddTransacao
     end
     object Label1: TLabel
       Left = 56
-      Top = 217
+      Top = 225
       Width = 108
       Height = 16
       Alignment = taRightJustify
@@ -161,27 +161,14 @@ object frmAddTransacao: TfrmAddTransacao
       Properties.Items.Strings = (
         'EXPENSE'
         'INCOME')
-      TabOrder = 0
+      TabOrder = 1
       Text = 'EXPENSE'
+      OnClick = cboTipoMovClick
       Width = 157
     end
     object edtFavorecido: TEdit
       Left = 186
-      Top = 133
-      Width = 440
-      Height = 21
-      CharCase = ecUpperCase
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 3
-    end
-    object edtCategoria: TEdit
-      Left = 186
-      Top = 160
+      Top = 108
       Width = 440
       Height = 21
       CharCase = ecUpperCase
@@ -195,7 +182,7 @@ object frmAddTransacao: TfrmAddTransacao
     end
     object edtSubCategoria: TEdit
       Left = 186
-      Top = 187
+      Top = 197
       Width = 440
       Height = 21
       CharCase = ecUpperCase
@@ -205,21 +192,21 @@ object frmAddTransacao: TfrmAddTransacao
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
-      TabOrder = 5
+      TabOrder = 7
     end
     object dtDateTrans: TcxDateEdit
       Left = 514
       Top = 79
       Properties.DisplayFormat = 'MM-dd-yyyy'
       Properties.EditFormat = 'MM-dd-yyyy'
-      TabOrder = 2
+      TabOrder = 3
       Width = 112
     end
     object editValor: TcxCurrencyEdit
       Left = 349
       Top = 79
       Properties.DisplayFormat = '$,0.00;($,0.00)'
-      TabOrder = 1
+      TabOrder = 2
       Width = 144
     end
     object btnCancelar: TcxButton
@@ -287,7 +274,7 @@ object frmAddTransacao: TfrmAddTransacao
         E0BFAEFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00
         FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFE7CABCD8AA94D7AA94D7AA94DB
         B4A1F0DFD7FF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FF}
-      TabOrder = 7
+      TabOrder = 10
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
@@ -433,7 +420,7 @@ object frmAddTransacao: TfrmAddTransacao
         0000000000000000000000000001000000010000000100000001000000010000
         0001000000010000000100000000000000000000000000000000000000000000
         0000000000000000000000000000000000000000000000000000}
-      TabOrder = 6
+      TabOrder = 9
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
@@ -446,7 +433,8 @@ object frmAddTransacao: TfrmAddTransacao
       Left = 544
       Top = 32
       Caption = 'Forecast'
-      TabOrder = 8
+      State = cbsChecked
+      TabOrder = 11
       Transparent = True
       Width = 121
     end
@@ -455,20 +443,22 @@ object frmAddTransacao: TfrmAddTransacao
       Top = 30
       Width = 352
       Height = 21
-      TabOrder = 9
+      TabOrder = 0
     end
     object cboCC: TComboBox
       Left = 186
-      Top = 106
+      Top = 138
       Width = 440
       Height = 21
+      Style = csDropDownList
       DropDownCount = 15
-      TabOrder = 10
+      TabOrder = 5
+      OnCloseUp = cboCCCloseUp
     end
     object edtRepeat: TSpinEdit
       AlignWithMargins = True
-      Left = 188
-      Top = 217
+      Left = 186
+      Top = 225
       Width = 69
       Height = 26
       Font.Charset = DEFAULT_CHARSET
@@ -479,8 +469,16 @@ object frmAddTransacao: TfrmAddTransacao
       MaxValue = 24
       MinValue = 1
       ParentFont = False
-      TabOrder = 11
-      Value = 0
+      TabOrder = 8
+      Value = 1
+    end
+    object cboCat: TComboBox
+      Left = 186
+      Top = 168
+      Width = 440
+      Height = 21
+      Style = csDropDownList
+      TabOrder = 6
     end
   end
   object pnlTitulo: TPanel
@@ -499,20 +497,19 @@ object frmAddTransacao: TfrmAddTransacao
     ParentBackground = False
     ParentFont = False
     TabOrder = 1
-    ExplicitWidth = 571
   end
   object sqlCentroCusto: TFDQuery
     Connection = Dados.FDConnection
     SQL.Strings = (
       'select * from CentrodeCusto'
       'Order by CENTRODECUSTO')
-    Left = 648
-    Top = 248
+    Left = 488
+    Top = 264
   end
   object dsCentroCusto: TDataSource
     DataSet = sqlCentroCusto
-    Left = 696
-    Top = 184
+    Left = 584
+    Top = 264
   end
   object sqlSalvar: TFDQuery
     Connection = Dados.FDConnection
@@ -521,7 +518,7 @@ object frmAddTransacao: TfrmAddTransacao
   end
   object dsBank: TDataSource
     DataSet = sqlBank
-    Left = 624
+    Left = 664
     Top = 174
   end
   object sqlBank: TFDQuery
@@ -529,7 +526,12 @@ object frmAddTransacao: TfrmAddTransacao
     SQL.Strings = (
       'select * from TBBANKING'
       'order by name')
-    Left = 640
+    Left = 648
     Top = 94
+  end
+  object sqlCategoria: TFDQuery
+    Connection = Dados.FDConnection
+    Left = 664
+    Top = 257
   end
 end

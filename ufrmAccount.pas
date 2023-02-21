@@ -96,14 +96,14 @@ type
     Label6: TLabel;
     dtStartDate: TcxDateEdit;
     procedure btnSalvarClick(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
     procedure edtPathSalvarClick(Sender: TObject);
     procedure cxGrid1DBTableView1CellDblClick(Sender: TcxCustomGridTableView;
       ACellViewInfo: TcxGridTableDataCellViewInfo; AButton: TMouseButton;
       AShift: TShiftState; var AHandled: Boolean);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
-    procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure btnCancelarClick(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     { Private declarations }
     Idx: Integer;
@@ -286,7 +286,7 @@ begin
          sqlAux.Params.ParamByName('Valor').AsFloat := edtSaldoInicial.Value;
          sqlAux.Params.ParamByName('CentroDeCusto').AsString := 'BALANCE';
          sqlAux.Params.ParamByName('ID_USERBANK').AsInteger  := VarNewBank;
-         sqlAux.Params.ParamByName('MODO').AsString          := 'M';
+         sqlAux.Params.ParamByName('MODO').AsString          := 'S';  // I - Importado - M - Manual - S - Saldo Inicial
 
          Try
             sqlAux.ExecSQL;
@@ -308,8 +308,8 @@ begin
           sqlAux.SQL.Add(' ,PATH = :PATH ');
           sqlAux.SQL.Add(' ,APELIDO = :APELIDO ');
           sqlAux.SQL.Add(' ,DATA_SALDO_INICIAL = :DATA_SALDO_INICIAL ');
-          sqlAux.SQL.Add(' Where ID_USERBANK = :ID_USERBANK');
-
+          sqlAux.SQL.Add(' Where ID_USERBANK = :ID_USERBANK AND ID_USER = :ID_USER');
+          sqlAux.Params.ParamByName('ID_USER').AsInteger      := Dados.varID_USER;
           sqlAux.Params.ParamByName('ID_BANK').AsInteger :=  Integer(cboBanco.Items.Objects[Idx]);
           sqlAux.Params.ParamByName('SALDO_INICIAL').AsFloat := edtSaldoInicial.Value;
           sqlAux.Params.ParamByName('PATH').AsString :=  edtPathSalvar.text;
@@ -323,6 +323,28 @@ begin
             on E : Exception do
               Mens_MensErro(E.ClassName+' error raised, with message : '+E.Message);
           end;
+
+
+          sqlAux.Close;
+          sqlAux.SQL.Clear;
+          sqlAux.SQL.Add(' Update TBTransacao ' );
+          sqlAux.SQL.Add(' Set Valor = :Valor');
+          sqlAux.SQL.Add(' ,DataTransacao = :DataTransacao');
+          sqlAux.SQL.Add(' Where ID_User = :ID_User AND ID_BANKING = :ID_BANKING AND ID_USERBANK = :ID_USERBANK AND MODO = :MODO');
+          sqlAux.Params.ParamByName('ID_USER').AsInteger      := Dados.varID_USER;
+          sqlAux.Params.ParamByName('ID_BANKING').AsInteger   := Dados.varID_Bank;
+          sqlAux.Params.ParamByName('ID_USERBANK').AsInteger  := varIDUserBank;
+          sqlAux.Params.ParamByName('MODO').AsString          := 'S';   // I - Importado - M - Manual - S - Saldo Inicial
+          sqlAux.Params.ParamByName('DataTransacao').AsSQLTimeStamp  := DateTimeToSQLTimeStamp(dtStartDate.Date);
+          sqlAux.Params.ParamByName('Valor').AsFloat := edtSaldoInicial.Value;
+
+          Try
+            sqlAux.ExecSQL;
+          except
+            on E : Exception do
+              Mens_MensErro(E.ClassName+' error raised, with message : '+E.Message);
+          end;
+
 
           if not System.IOUtils.TDirectory.Exists( edtPathSalvar.Text + '\BACKUP\'  ) then
           begin
@@ -393,32 +415,7 @@ begin
 
 end;
 
-procedure TfrmAccount.FormClose(Sender: TObject; var Action: TCloseAction);
-begin
-  frmAccount := nil;
-  Action := caFree;
-end;
-
-procedure TfrmAccount.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
-var
-  buttonSelected: integer;
-begin
-{  if Dados.CheckBank  = 0 then
-  begin
-    buttonSelected := MessageDlg('You must select at least one bank to continue.' , mtCustom, [mbYes, mbNo], 0);
-    if buttonSelected = mrYES then
-    begin
-      CanClose:=false;
-    end
-    else
-    begin
-      CanClose:=false;
-    end;
-  end;
- }
-end;
-
-procedure TfrmAccount.FormCreate(Sender: TObject);
+procedure TfrmAccount.FormActivate(Sender: TObject);
 begin
   Page.ActivePage := TabUsuario;
   dtStartDate.Properties.EditFormat := FormatSettings.ShortDateFormat;
@@ -452,6 +449,32 @@ begin
   begin
       cboBanco.Items.AddObject(sqlBank.FieldByName('NAME').AsString, TObject(sqlBank.FieldByName('ID_BANKING').AsInteger ));
       sqlBank.Next;
+  end;
+  cboBanco.SetFocus;
+end;
+
+
+procedure TfrmAccount.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  frmAccount := nil;
+  Action := caFree;
+end;
+
+procedure TfrmAccount.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+var
+  buttonSelected: integer;
+begin
+  if Dados.CheckBank  = 0 then
+  begin
+    buttonSelected := MessageDlg('You must select at least one bank to continue.' , mtCustom, [mbYes, mbNo], 0);
+    if buttonSelected = mrYES then
+    begin
+      CanClose:=false;
+    end
+    else
+    begin
+      CanClose:=false;
+    end;
   end;
 
 end;

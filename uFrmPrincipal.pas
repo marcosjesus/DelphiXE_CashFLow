@@ -170,9 +170,6 @@ type
     sqlGraficoBarraMES: TIntegerField;
     sqlGraficoBarraANO: TIntegerField;
     sqlGraficoBarraVALOR: TFMTBCDField;
-    sqlGraficoWeekCENTRODECUSTO: TStringField;
-    sqlGraficoWeekWEEK: TIntegerField;
-    sqlGraficoWeekVALOR: TFMTBCDField;
     sqlDetalheId: TFDAutoIncField;
     sqlDetalheFavorecido: TStringField;
     sqlDetalheCategoria: TStringField;
@@ -187,16 +184,19 @@ type
     PanelSQLSplashScreen: TPanel;
     ImageSQLSplashScreen: TImage;
     cxLabelMensagem: TcxLabel;
+
     procedure cxGrid1DBBandedTableView1CellDblClick(
       Sender: TcxCustomGridTableView;
       ACellViewInfo: TcxGridTableDataCellViewInfo; AButton: TMouseButton;
       AShift: TShiftState; var AHandled: Boolean);
-    procedure Import1Click(Sender: TObject);
-    procedure Exit1Click(Sender: TObject);
+
+   // procedure Import1Click(Sender: TObject);
+    //procedure Exit1Click(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure cxGridDetDBTableView1CellDblClick(Sender: TcxCustomGridTableView;
       ACellViewInfo: TcxGridTableDataCellViewInfo; AButton: TMouseButton;
       AShift: TShiftState; var AHandled: Boolean);
+
     procedure Timer1Timer(Sender: TObject);
     procedure CostCenter1Click(Sender: TObject);
     procedure Category1Click(Sender: TObject);

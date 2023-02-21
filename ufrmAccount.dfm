@@ -14,9 +14,9 @@ object frmAccount: TfrmAccount
   OldCreateOrder = False
   Visible = True
   WindowState = wsMaximized
+  OnActivate = FormActivate
   OnClose = FormClose
   OnCloseQuery = FormCloseQuery
-  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object pnlTitulo: TPanel
@@ -352,8 +352,8 @@ object frmAccount: TfrmAccount
         BorderStyle = bsSingle
         TabOrder = 3
         object btnSalvar: TcxButton
-          Left = 65
-          Top = 8
+          Left = 67
+          Top = 4
           Width = 97
           Height = 35
           Caption = '&Save'
@@ -500,7 +500,7 @@ object frmAccount: TfrmAccount
         end
         object btnCancelar: TcxButton
           Left = 337
-          Top = 8
+          Top = 4
           Width = 97
           Height = 35
           Caption = '&Close'

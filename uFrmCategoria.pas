@@ -38,8 +38,10 @@ type
     cxGrid1DBTableView1FAVORECIDO: TcxGridDBColumn;
     cxGrid1DBTableView1CATEGORIA: TcxGridDBColumn;
     cxGrid1DBTableView1CENTRODECUSTO: TcxGridDBColumn;
-    procedure FormCreate(Sender: TObject);
+    sqlCategoriaSUBCATEGORIA: TStringField;
+    cxGrid1DBTableView1SUBCATEGORIA: TcxGridDBColumn;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormActivate(Sender: TObject);
   private
     { Private declarations }
   public
@@ -55,16 +57,18 @@ implementation
 
 uses uDados;
 
+procedure TfrmCategoria.FormActivate(Sender: TObject);
+begin
+  sqlCategoria.Close;
+  sqlCategoria.Params.ParamByName('ID_USER').AsInteger := Dados.varID_USER;
+  sqlCategoria.Params.ParamByName('ID_LANGUAGE').AsInteger := Dados.varID_Language;
+  sqlCategoria.Open;
+end;
+
 procedure TfrmCategoria.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   frmCategoria := nil;
   Action := caFree;
-end;
-
-procedure TfrmCategoria.FormCreate(Sender: TObject);
-begin
-  sqlCategoria.Close;
-  sqlCategoria.Open;
 end;
 
 end.

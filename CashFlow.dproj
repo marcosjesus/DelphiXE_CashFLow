@@ -125,16 +125,16 @@
             <Form>frmCreateAccount</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="uFrmPrincipal.pas">
-            <Form>frmPrincipal</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
         <DCCReference Include="uFrmVincularCentroCusto.pas">
             <Form>frmVincularCentroCusto</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="uImportFile.pas">
             <Form>frmImportFile</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="uFrmTransacao.pas">
+            <Form>frmTransacao</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <BuildConfiguration Include="Release">

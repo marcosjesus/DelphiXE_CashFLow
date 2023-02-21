@@ -19,8 +19,9 @@ type
     sqlMensagem: TFDQuery;
     FDSQLiteSecurity: TFDSQLiteSecurity;
     FDConnection: TFDConnection;
-    FDPhysSQLiteDriverLink1: TFDPhysSQLiteDriverLink;
+    FDPhysSQLiteDriverLink: TFDPhysSQLiteDriverLink;
     SqlAux: TFDQuery;
+    sqlAux2: TFDQuery;
     procedure DataModuleCreate(Sender: TObject);
   private
     Arq : TIniFile;
@@ -43,6 +44,9 @@ type
     procedure BuscaCaminhodoArquivo;
     function BuscaDados : Boolean;
     function Connection: TFDConnection;
+    procedure CadastraCategoria(varFavorecido, varCategoria,
+      varSubCategoria: String; CentroDeCusto : String='');
+    function RetornaIDCentrodeCusto(varCentroDeCusto, varCategoria : String) : Integer;
 
 
   end;
@@ -207,8 +211,8 @@ end;
 
 procedure TDados.DataModuleCreate(Sender: TObject);
 begin
-   Arq := TIniFile.Create(ExtractFilePath(Application.ExeName)+'conexao.ini');
-   varBanco := Arq.ReadString('BANCO','VENDOR', '');
+   Arq       := TIniFile.Create(ExtractFilePath(Application.ExeName)+'conexao.ini');
+   varBanco  := Arq.ReadString('BANCO','VENDOR', '');
    varRegiao := Arq.ReadString('REGIAO','FORMATDATE', '');
    Arq.Free;
    varLogado := False;
@@ -226,6 +230,20 @@ begin
   end;
 end;
 
+
+function TDados.RetornaIDCentrodeCusto(varCentroDeCusto, varCategoria: String): Integer;
+begin
+   sqlAux2.Close;
+   sqlAux2.SQL.Clear;
+   sqlAux2.SQL.Add('Select ID_CENTRODECUSTO From CENTRODECUSTO Where CENTRODECUSTO = :CENTRODECUSTO AND CATEGORIA = :CATEGORIA AND ID_USER = :ID_USER');
+   sqlAux2.params.ParamByName('CENTRODECUSTO').AsString := varCentroDeCusto;
+   sqlAux2.params.ParamByName('CATEGORIA').AsString := varCategoria;
+   sqlAux2.params.ParamByName('ID_USER').AsInteger := varID_USER;
+
+   sqlAux2.Open;
+   Result := sqlAux2.FieldByName('ID_CENTRODECUSTO').AsInteger;
+
+end;
 
 function TDados.RetornaMensagem(varDescription : String) : String;
 begin
@@ -246,7 +264,38 @@ begin
 end;
 
 
+procedure TDados.CadastraCategoria(varFavorecido,varCategoria, varSubCategoria :String; CentroDeCusto : String);
+begin
 
+    sqlAux.Close;
+    sqlAux.SQL.Clear;
+    if CentroDeCusto = '' then
+    begin
+      sqlAux.SQL.Add('Insert Into TBCATEGORIA ( Favorecido, Categoria, SubCategoria, ID_Language, ID_USER )');
+      sqlAux.SQL.Add(' Values ( :Favorecido, :Categoria, :SubCategoria, :ID_Language, :ID_USER )');
+    end
+    else
+    begin
+      sqlAux.SQL.Add('Insert Into TBCATEGORIA ( Favorecido, Categoria, SubCategoria, ID_Language, ID_USER, ID_CENTRODECUSTO )');
+      sqlAux.SQL.Add(' Values ( :Favorecido, :Categoria, :SubCategoria, :ID_Language, :ID_USER, :ID_CENTRODECUSTO )');
+      sqlAux.Params.ParamByName('ID_CENTRODECUSTO').AsInteger := RetornaIDCentrodeCusto(CentroDeCusto, varCategoria);
+
+    end;
+    sqlAux.Params.ParamByName('Favorecido').AsString   := varFavorecido;
+    sqlAux.Params.ParamByName('SubCategoria').AsString := varSubCategoria;
+    sqlAux.Params.ParamByName('Categoria').AsString    := varCategoria;
+    sqlAux.Params.ParamByName('ID_Language').AsInteger := varID_Language;
+    sqlAux.Params.ParamByName('ID_USER').AsInteger     := varID_USER;
+
+
+    Try
+       sqlAux.ExecSQL;
+    except
+      on E : Exception do
+         ShowMessage(E.ClassName+' error raised, with message : '+E.Message);
+    end;
+
+end;
 
 
 

@@ -3,6 +3,7 @@ unit uFrmAddTransacao;
 interface
 
 uses
+  Data.SqlTimSt,
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, cxGraphics, cxControls, cxLookAndFeels,
   cxLookAndFeelPainters, cxContainer, cxEdit, dxSkinsCore, dxSkinBlack,
@@ -34,7 +35,6 @@ type
     dsCentroCusto: TDataSource;
     lblpagamento: TLabel;
     edtFavorecido: TEdit;
-    edtCategoria: TEdit;
     lblValor: TLabel;
     edtSubCategoria: TEdit;
     lblTransData: TLabel;
@@ -56,13 +56,18 @@ type
     lblSubCategoria: TLabel;
     edtRepeat: TSpinEdit;
     Label1: TLabel;
-    procedure FormCreate(Sender: TObject);
+    sqlCategoria: TFDQuery;
+    cboCat: TComboBox;
     procedure btnSalvarClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure cboTipoMovClick(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
+    procedure cboCCCloseUp(Sender: TObject);
   private
     Idx, IdxCC : Integer;
     procedure LimpaTela;
     procedure FiltroCentrodeCusto(varFiltro : String);
+    procedure FiltraCategoria(varFiltroCategoria: String);
 
     { Private declarations }
   public
@@ -133,7 +138,10 @@ begin
   IdxCC := cboCC.ItemIndex;
 
   varNextDate :=  dtDateTrans.Date;
-  for I := 1 to edtRepeat.Value - 1 do
+
+  Dados.CadastraCategoria(UpperCase(Trim(edtFavorecido.Text)), UpperCase(Trim(cboCat.Text)), UpperCase(Trim(edtSubCategoria.Text)), cboCC.Text);
+
+  for I := 0 to edtRepeat.Value - 1  do
   begin
 
       sqlSalvar.Close;
@@ -144,7 +152,7 @@ begin
       sqlSalvar.SQL.Add('           ,Tipo ');
       sqlSalvar.SQL.Add('           ,DataTransacao');
       sqlSalvar.SQL.Add('           ,Favorecido');
-      if edtCategoria.Text <> '' then
+      if cboCat.Text <> '' then
         sqlSalvar.SQL.Add('         ,Categoria');
       if edtSubCategoria.Text <> '' then
         sqlSalvar.SQL.Add('         ,SubCategoria');
@@ -160,7 +168,7 @@ begin
       sqlSalvar.SQL.Add('           ,:TIPO');
       sqlSalvar.SQL.Add('           ,:DATATRANSACAO');
       sqlSalvar.SQL.Add('           ,:FAVORECIDO');
-      if edtCategoria.Text <> '' then
+      if cboCat.Text <> '' then
         sqlSalvar.SQL.Add('         ,:CATEGORIA');
       if edtSubCategoria.Text <> '' then
         sqlSalvar.SQL.Add('         ,:SUBCATEGORIA');
@@ -173,16 +181,16 @@ begin
       sqlSalvar.Params.ParamByName('ID_USER').AsInteger :=  Dados.varID_USER;
       sqlSalvar.Params.ParamByName('ID_BANKING').AsInteger :=  Dados.varID_Bank;
       sqlSalvar.Params.ParamByName('TIPO').AsString :=  cboTipoMov.Text;
-      sqlSalvar.Params.ParamByName('DATATRANSACAO').AsString :=  FormatDateTime('yyyy-mm-dd',(varNextDate));
+      sqlSalvar.Params.ParamByName('DATATRANSACAO').asDate  := varNextDate;
       sqlSalvar.Params.ParamByName('FAVORECIDO').AsString := UpperCase(Trim(edtFavorecido.Text));
 
-      if edtCategoria.Text <> '' then
-        sqlSalvar.Params.ParamByName('CATEGORIA').AsString :=  UpperCase(Trim(edtCategoria.Text));
+      if cboCat.Text <> '' then
+        sqlSalvar.Params.ParamByName('CATEGORIA').AsString :=  UpperCase(Trim(cboCat.Text));
       if edtSubCategoria.Text <> '' then
         sqlSalvar.Params.ParamByName('SUBCATEGORIA').AsString := UpperCase(Trim(edtSubCategoria.Text));
 
       if cboTipoMov.ItemIndex = 0 then
-         editValor.Value := editValor.Value * -1
+         editValor.Value := Abs(editValor.Value) * -1
       else editValor.Value := Abs(editValor.Value);
 
       sqlSalvar.Params.ParamByName('VALOR').AsString :=  FloatToStrWithDecimalPoint(editValor.Value, Dados.varRegiao);
@@ -205,6 +213,8 @@ begin
        varNextDate := IncMonth(varNextDate, 1)
   end;
 
+
+
   Mens_MensInf( Dados.RetornaMensagem('MEN_REC_SAVE') );
   LimpaTela;
 
@@ -217,14 +227,13 @@ begin
  dtDateTrans.Date := Now;
  cboCC.ItemIndex := -1;
  edtFavorecido.Text := '';
- edtCategoria.Text := '';
  edtSubCategoria.Text := '';
 end;
 
-procedure TfrmAddTransacao.FormCreate(Sender: TObject);
+procedure TfrmAddTransacao.FormActivate(Sender: TObject);
 begin
  Dados.ConectarNoBanco;
-
+  {
  sqlBank.Close;
  sqlBank.sql.Clear;
  sqlBank.SQL.Add('Select * from TBBANKING order by ID_Banking');
@@ -233,9 +242,30 @@ begin
  cboBank.Items.Clear;
  while not sqlBank.Eof do
  begin
-    cboBank.Items.AddObject(sqlBank.FieldByName('NAME').AsString, TObject(sqlBank.FieldByName('ID_BANKING').AsInteger ));
+    cboBank.Items.AddObject(sqlBank.FieldByName('NAME').AsString  + '-' + sqlBank.FieldByName('APELIDO').AsString , TObject(sqlBank.FieldByName('ID_BANKING').AsInteger ));
     sqlBank.Next;
  end;
+
+   }
+
+  sqlBank.Close;
+  sqlBank.sql.Clear;
+  sqlBank.SQL.Add('Select  UB.ID_USERBANK, B.NAME, B.ID_BANKING, UB.APELIDO from TBBANKING B ');
+  sqlBank.SQL.Add(' Inner join TBUSERBANK UB on UB.ID_BANK = B.ID_BANKING ');
+  sqlBank.SQL.Add(' where UB.ID_USER = :ID_USER ' );
+  sqlBank.SQL.Add(' order by UB.ID_BANK');
+  sqlBank.Params.ParamByName('ID_USER').AsInteger := Dados.varID_USER;
+  sqlBank.Open;
+  sqlBank.First;
+  cboBank.Items.Clear;
+  cboBank.Items.Add('');
+  while not sqlBank.Eof do
+  begin
+      cboBank.Items.AddObject(sqlBank.FieldByName('NAME').AsString + '-' + sqlBank.FieldByName('APELIDO').AsString , TObject(sqlBank.FieldByName('ID_USERBANK').AsInteger ));
+      sqlBank.Next;
+  end;
+
+  idx := -1;
 
 
  Caption                 := Dados.RetornaMensagem('MEN_MENS_ADDTRAN');
@@ -253,25 +283,65 @@ begin
 
  dtDateTrans.Date         := Now;
 
- FiltroCentrodeCusto('');
+ FiltroCentrodeCusto(cboTipoMov.Text);
+ cboBank.SetFocus;
+end;
 
+procedure TfrmAddTransacao.FiltraCategoria(varFiltroCategoria : String);
+begin
+  sqlCategoria.Close;
+  sqlCategoria.SQL.Clear;
+  sqlCategoria.SQL.Add('Select * from CentrodeCusto Where ID_LANGUAGE = :ID_LANGUAGE and ID_USER = :ID_USER  and CentrodeCusto = :CentrodeCusto Order by CENTRODECUSTO, GRUPO ');
+  sqlCategoria.Params.ParamByName('ID_LANGUAGE').AsInteger  := Dados.varID_Language;
+  sqlCategoria.Params.ParamByName('ID_USER').AsInteger      := Dados.varID_USER;
+  sqlCategoria.Params.ParamByName('CentrodeCusto').AsString := varFiltroCategoria;
+  sqlCategoria.Open;
+  sqlCategoria.First;
+  cboCat.Clear;
+  while not sqlCategoria.eof do
+  begin
+      cboCat.Items.AddObject(sqlCategoria.FieldByName('Categoria').AsString, TObject(sqlCategoria.FieldByName('ID_CentrodeCusto').AsInteger));
+
+    sqlCategoria.Next;
+  end;
+
+
+
+end;
+procedure TfrmAddTransacao.cboCCCloseUp(Sender: TObject);
+begin
+   FiltraCategoria(cboCC.Text);
+end;
+
+procedure TfrmAddTransacao.cboTipoMovClick(Sender: TObject);
+begin
+   FiltroCentrodeCusto(cboTipoMov.Text);
 end;
 
 procedure  TfrmAddTransacao.FiltroCentrodeCusto(varFiltro : String);
+var
+  I : Integer;
 begin
+ cboCC.Clear;
  sqlCentroCusto.Close;
  sqlCentroCusto.SQL.Clear;
- sqlCentroCusto.SQL.Add('Select * from CentrodeCusto Where ID_LANGUAGE = :ID_LANGUAGE and ID_USER = :ID_USER Order by CENTRODECUSTO, GRUPO ');
- sqlCentroCusto.Params.ParamByName('ID_LANGUAGE').AsInteger := 1; //Dados.varID_Language;
+ sqlCentroCusto.SQL.Add('Select Distinct CentroDeCusto from CentrodeCusto Where ID_LANGUAGE = :ID_LANGUAGE and ID_USER = :ID_USER  and TIPO = :TIPO Order by CENTRODECUSTO, GRUPO ');
+ sqlCentroCusto.Params.ParamByName('ID_LANGUAGE').AsInteger := Dados.varID_Language;
  sqlCentroCusto.Params.ParamByName('ID_USER').AsInteger := Dados.varID_USER;
- sqlCentroCusto.Open;
+ sqlCentroCusto.Params.ParamByName('TIPO').AsString := varFiltro;
 
+ sqlCentroCusto.Open;
+ I := 0;
  sqlCentroCusto.First;
  while not sqlCentroCusto.Eof do
  begin
-     cboCC.Items.AddObject(sqlCentroCusto.FieldByName('CentrodeCusto').AsString, TObject(sqlCentroCusto.FieldByName('ID_CentrodeCusto').AsInteger));
+     cboCC.Items.AddObject(sqlCentroCusto.FieldByName('CentrodeCusto').AsString, TObject(I));
+     Inc(I);
      sqlCentroCusto.Next;
  end;
+
+
+
 
 end;
 

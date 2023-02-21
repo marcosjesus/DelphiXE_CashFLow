@@ -42,9 +42,11 @@ type
     dsCentroCusto: TDataSource;
     sqlCentroCustoTIPO: TStringField;
     cxTableViewOperadorTipo: TcxGridDBColumn;
-    procedure FormCreate(Sender: TObject);
+    sqlCentroCustoCategoria: TStringField;
+    cxTableViewOperadorCategoria: TcxGridDBColumn;
     procedure sqlCentroCustoBeforePost(DataSet: TDataSet);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormActivate(Sender: TObject);
   private
     { Private declarations }
   public
@@ -60,24 +62,24 @@ implementation
 
 uses uDados;
 
-procedure TfrmCentroDeCusto.FormClose(Sender: TObject;
-  var Action: TCloseAction);
-begin
-  frmCentroDeCusto := nil;
-  Action := caFree;
-end;
-
-procedure TfrmCentroDeCusto.FormCreate(Sender: TObject);
+procedure TfrmCentroDeCusto.FormActivate(Sender: TObject);
 begin
  Dados.ConectarNoBanco;
 
  sqlCentroCusto.Close;
  sqlCentroCusto.SQL.Clear;
  sqlCentroCusto.SQL.Add('Select * from CentrodeCusto Where ID_LANGUAGE = :ID_LANGUAGE and ID_USER = :ID_USER Order by CENTRODECUSTO, GRUPO ');
- sqlCentroCusto.Params.ParamByName('ID_LANGUAGE').AsInteger := 1; //Dados.varID_Language;
+ sqlCentroCusto.Params.ParamByName('ID_LANGUAGE').AsInteger := Dados.varID_Language;
  sqlCentroCusto.Params.ParamByName('ID_USER').AsInteger := Dados.varID_USER;
 
  sqlCentroCusto.Open;
+end;
+
+procedure TfrmCentroDeCusto.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  frmCentroDeCusto := nil;
+  Action := caFree;
 end;
 
 procedure TfrmCentroDeCusto.sqlCentroCustoBeforePost(DataSet: TDataSet);

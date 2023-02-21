@@ -14,6 +14,7 @@ object FrmLogin: TFrmLogin
   OldCreateOrder = False
   Visible = True
   WindowState = wsMaximized
+  OnActivate = FormActivate
   OnClose = FormClose
   PixelsPerInch = 96
   TextHeight = 13
@@ -60,7 +61,7 @@ object FrmLogin: TFrmLogin
       Tag = -1
       Left = 88
       Top = 59
-      Width = 121
+      Width = 345
       Height = 21
       BorderStyle = bsNone
       CharCase = ecUpperCase
@@ -73,13 +74,13 @@ object FrmLogin: TFrmLogin
       ParentFont = False
       PasswordChar = '*'
       TabOrder = 2
-      Text = ''
+      Text = '123'
       OnKeyDown = EdiSenhaKeyDown
     end
     object EdiUsuario: TEdit
       Left = 88
       Top = 32
-      Width = 465
+      Width = 345
       Height = 21
       BorderStyle = bsNone
       CharCase = ecUpperCase
@@ -90,6 +91,7 @@ object FrmLogin: TFrmLogin
       Font.Style = []
       ParentFont = False
       TabOrder = 1
+      Text = 'JOAO@UOL.COM'
     end
     object butOk: TcxButton
       Left = 88
@@ -161,7 +163,7 @@ object FrmLogin: TFrmLogin
       OnClick = butOkClick
     end
     object butCancel: TcxButton
-      Left = 224
+      Left = 264
       Top = 86
       Width = 97
       Height = 39
@@ -235,10 +237,10 @@ object FrmLogin: TFrmLogin
       OnClick = butCancelClick
     end
     object btnCreateAccount: TcxButton
-      Left = 440
-      Top = 68
+      Left = 448
+      Top = 32
       Width = 113
-      Height = 57
+      Height = 93
       Caption = 'Sign UP'
       OptionsImage.Glyph.Data = {
         36100000424D3610000000000000360000002800000020000000200000000100
@@ -377,7 +379,7 @@ object FrmLogin: TFrmLogin
   end
   object sqlAux: TFDQuery
     Connection = Dados.FDConnection
-    Left = 516
-    Top = 20
+    Left = 396
+    Top = 100
   end
 end

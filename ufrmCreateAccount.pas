@@ -41,6 +41,7 @@ type
     EdtPhone: TMaskEdit;
     sqlAux: TFDQuery;
     procedure butOkClick(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
   private
     { Private declarations }
   public
@@ -105,25 +106,31 @@ begin
      Exit ;
   end;
 
-   sqlSalvar.Close;
-   sqlSalvar.SQL.Clear;
-   sqlSalvar.SQL.Add('insert into TBUSER  ( FULLNAME, EMAIL, PWD, PHONE_NUMBER, ID_LANGUAGE ) ');
-   sqlSalvar.SQL.Add('values ( :FullName, :Email, :Pwd, :PHONE_NUMBER,  :Id_Language)');
-   sqlSalvar.Params.ParamByName('FullName').AsString     :=  edtFullName.Text;
-   sqlSalvar.Params.ParamByName('Email').AsString        :=  Uppercase(Trim(edtEmail.Text));
-   sqlSalvar.Params.ParamByName('Pwd').AsString          :=  UpperCase(Trim(edtPassword.Text));
-   sqlSalvar.Params.ParamByName('PHONE_NUMBER').AsString :=  EdtPhone.Text;
-   sqlSalvar.Params.ParamByName('Id_Language').AsInteger :=  cboLanguage.ItemIndex + 1;
-   Try
+  sqlSalvar.Close;
+  sqlSalvar.SQL.Clear;
+  sqlSalvar.SQL.Add('insert into TBUSER  ( FULLNAME, EMAIL, PWD, PHONE_NUMBER, ID_LANGUAGE ) ');
+  sqlSalvar.SQL.Add('values ( :FullName, :Email, :Pwd, :PHONE_NUMBER,  :Id_Language)');
+  sqlSalvar.Params.ParamByName('FullName').AsString     :=  edtFullName.Text;
+  sqlSalvar.Params.ParamByName('Email').AsString        :=  Uppercase(Trim(edtEmail.Text));
+  sqlSalvar.Params.ParamByName('Pwd').AsString          :=  UpperCase(Trim(edtPassword.Text));
+  sqlSalvar.Params.ParamByName('PHONE_NUMBER').AsString :=  EdtPhone.Text;
+  sqlSalvar.Params.ParamByName('Id_Language').AsInteger :=  cboLanguage.ItemIndex + 1;
+  Try
       sqlSalvar.ExecSQL;
       Mens_MensInf( 'USER CREATED' );
 
-   except
+  except
       on E : Exception do
-        Mens_MensErro(E.ClassName+' error raised, with message : '+E.Message);
-   end;
+      begin
+        if Pos('is not unique', E.Message) <> 0 then
+           Mens_MensErro('E-mail already exists')
+        else
+          Mens_MensErro(E.ClassName+' error raised, with message : '+E.Message);
+          exit;
+      end;
+  end;
 
-   Try
+  Try
       if Dados.varBanco = '1' then
       begin
         sqlAux.Close;
@@ -165,8 +172,8 @@ begin
 
           sqlAux.Close;
           sqlAux.SQL.Clear;
-          sqlAux.SQL.Add(' Insert into CentrodeCusto (CentroDeCusto, ID_USER, ID_LANGUAGE, grupo) ');
-          sqlAux.SQL.Add(' Select CentroDeCusto, ' + IntToStr(varIdUser) + ', ID_LANGUAGE, grupo from CentrodeCusto where ID_USER = :ID_USER ');
+          sqlAux.SQL.Add(' Insert into CentrodeCusto (CentroDeCusto, Categoria, ID_USER, ID_LANGUAGE, GRUPO, TIPO) ');
+          sqlAux.SQL.Add(' Select CentroDeCusto, Categoria, ' + IntToStr(varIdUser) + ', ID_LANGUAGE, GRUPO, TIPO from CentrodeCusto where ID_USER = :ID_USER ');
           sqlAux.Params.ParamByName('ID_USER').AsInteger :=  varIdUserOLD;
           Try
             sqlAux.ExecSQL;
@@ -178,12 +185,12 @@ begin
 
       end;
 
-   Finally
+  Finally
        FreeAndNil(sqlAux);
-   End;
+  End;
 
-   varMsg    := TStringList.Create;
-   Try
+  varMsg    := TStringList.Create;
+  Try
 
 
       varMsg.Add('<HTML>');
@@ -225,10 +232,15 @@ begin
 
      // EnviarEmail('mlj.developer.br@gmail.com', varMsg.Text);
 
-   Finally
-     FreeAndNil(varMsg);
-   End;
+  Finally
+    FreeAndNil(varMsg);
+  End;
 
+end;
+
+procedure TfrmCreateAccount.FormActivate(Sender: TObject);
+begin
+  edtFullName.SetFocus;
 end;
 
 end.

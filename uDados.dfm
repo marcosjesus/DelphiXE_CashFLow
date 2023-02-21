@@ -26,7 +26,7 @@ object Dados: TDados
     Top = 280
   end
   object FDSQLiteSecurity: TFDSQLiteSecurity
-    DriverLink = FDPhysSQLiteDriverLink1
+    DriverLink = FDPhysSQLiteDriverLink
     ToPassword = '1234'
     Left = 392
     Top = 256
@@ -38,10 +38,10 @@ object Dados: TDados
         'ow\Win32\Debug\dbcashflow.db'
       'DriverID=SQLite')
     LoginPrompt = False
-    Left = 184
-    Top = 80
+    Left = 448
+    Top = 112
   end
-  object FDPhysSQLiteDriverLink1: TFDPhysSQLiteDriverLink
+  object FDPhysSQLiteDriverLink: TFDPhysSQLiteDriverLink
     DriverID = 'SQLite'
     VendorLib = 
       'C:\Users\aluga.com\Documents\RAD Studio\Projects\CashFlow\sqlite' +
@@ -53,5 +53,10 @@ object Dados: TDados
     Connection = FDConnection
     Left = 184
     Top = 168
+  end
+  object sqlAux2: TFDQuery
+    Connection = FDConnection
+    Left = 200
+    Top = 288
   end
 end

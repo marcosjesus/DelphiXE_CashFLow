@@ -37,7 +37,7 @@ object frmPrincipal: TfrmPrincipal
     Font.Style = []
     ParentFont = False
     TabOrder = 0
-    Properties.ActivePage = TabTransacao
+    Properties.ActivePage = TabIE
     Properties.CustomButtons.Buttons = <>
     OnChange = PageChange
     ClientRectBottom = 359
@@ -237,7 +237,7 @@ object frmPrincipal: TfrmPrincipal
         Font.Style = []
         ParentFont = False
         TabOrder = 0
-        Properties.ActivePage = cxTabSheet1
+        Properties.ActivePage = cxTabSheet3
         Properties.CustomButtons.Buttons = <>
         ClientRectBottom = 331
         ClientRectLeft = 4
@@ -3793,7 +3793,6 @@ object frmPrincipal: TfrmPrincipal
       Caption = 'File'
       object Import1: TMenuItem
         Caption = 'Import'
-        OnClick = Import1Click
       end
       object N1: TMenuItem
         Caption = '-'
@@ -3818,7 +3817,6 @@ object frmPrincipal: TfrmPrincipal
       end
       object Exit1: TMenuItem
         Caption = 'Exit'
-        OnClick = Exit1Click
       end
     end
   end
@@ -4031,8 +4029,8 @@ object frmPrincipal: TfrmPrincipal
     Connection = Dados.FDConnection
     SQL.Strings = (
       
-        'SELECT CENTRODECUSTO,  DATEPART(week, DATATRANSACAO) as [WEEK], ' +
-        'SUM(VALOR * -1) AS VALOR '
+        'SELECT CENTRODECUSTO,  DATEPART(week, DATATRANSACAO) as WEEK, SU' +
+        'M(VALOR * -1) AS VALOR '
       'FROM TBTRANSACAO '
       'WHERE 1 = 1 '
       ' AND DATATRANSACAO BETWEEN '#39'2021-05-01'#39' AND '#39'2022-04-30'#39'  '
@@ -4043,23 +4041,6 @@ object frmPrincipal: TfrmPrincipal
       'ORDER BY DATEPART(week, DATATRANSACAO)')
     Left = 640
     Top = 320
-    object sqlGraficoWeekCENTRODECUSTO: TStringField
-      FieldName = 'CENTRODECUSTO'
-      Origin = 'CENTRODECUSTO'
-      Size = 100
-    end
-    object sqlGraficoWeekWEEK: TIntegerField
-      FieldName = 'WEEK'
-      Origin = 'WEEK'
-      ReadOnly = True
-    end
-    object sqlGraficoWeekVALOR: TFMTBCDField
-      FieldName = 'VALOR'
-      Origin = 'VALOR'
-      ReadOnly = True
-      Precision = 38
-      Size = 2
-    end
   end
   object dsGraficoWeek: TDataSource
     DataSet = sqlGraficoWeek

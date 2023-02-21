@@ -14,8 +14,8 @@ object frmCentroDeCusto: TfrmCentroDeCusto
   OldCreateOrder = False
   Visible = True
   WindowState = wsMaximized
+  OnActivate = FormActivate
   OnClose = FormClose
-  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object cxGridOperador: TcxGrid
@@ -83,14 +83,18 @@ object frmCentroDeCusto: TfrmCentroDeCusto
       object cxTableViewOperadorCentroDeCusto: TcxGridDBColumn
         Caption = 'Centro de Custo'
         DataBinding.FieldName = 'CentroDeCusto'
-        Width = 300
+        Width = 200
+      end
+      object cxTableViewOperadorCategoria: TcxGridDBColumn
+        DataBinding.FieldName = 'Categoria'
+        Width = 250
       end
       object cxTableViewOperadorTipo: TcxGridDBColumn
         Caption = 'Tipo'
         DataBinding.FieldName = 'TIPO'
         PropertiesClassName = 'TcxComboBoxProperties'
         Properties.Items.Strings = (
-          'EXPENSES'
+          'EXPENSE'
           'INCOME')
         Width = 108
       end
@@ -134,6 +138,11 @@ object frmCentroDeCusto: TfrmCentroDeCusto
     object sqlCentroCustoTIPO: TStringField
       FieldName = 'TIPO'
       Origin = 'TIPO'
+    end
+    object sqlCentroCustoCategoria: TStringField
+      FieldName = 'Categoria'
+      Origin = 'Categoria'
+      Size = 100
     end
   end
   object dsCentroCusto: TDataSource

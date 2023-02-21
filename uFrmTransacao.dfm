@@ -15,8 +15,8 @@ object frmTransacao: TfrmTransacao
   Position = poDefaultSizeOnly
   Visible = True
   WindowState = wsMaximized
+  OnActivate = FormActivate
   OnClose = FormClose
-  OnCreate = FormCreate
   DesignSize = (
     793
     529)
@@ -29,8 +29,6 @@ object frmTransacao: TfrmTransacao
     Height = 41
     Align = alTop
     TabOrder = 0
-    ExplicitLeft = -315
-    ExplicitWidth = 1108
     object lblMesAno: TLabel
       Left = 16
       Top = 10
@@ -40,7 +38,7 @@ object frmTransacao: TfrmTransacao
     end
     object cboAnoBase: TComboBox
       Left = 147
-      Top = 10
+      Top = 14
       Width = 57
       Height = 21
       Font.Charset = DEFAULT_CHARSET
@@ -52,6 +50,7 @@ object frmTransacao: TfrmTransacao
       ParentFont = False
       TabOrder = 0
       Text = '2024'
+      OnChange = cboAnoBaseChange
       Items.Strings = (
         '2020'
         '2021'
@@ -73,8 +72,6 @@ object frmTransacao: TfrmTransacao
     Height = 41
     Align = alTop
     TabOrder = 1
-    ExplicitLeft = -315
-    ExplicitWidth = 1108
     object lblPropConta: TcxLabel
       Left = 16
       Top = 6
@@ -83,7 +80,7 @@ object frmTransacao: TfrmTransacao
     object cboBank: TComboBox
       Left = 147
       Top = 10
-      Width = 377
+      Width = 262
       Height = 21
       TabOrder = 1
     end
@@ -95,8 +92,6 @@ object frmTransacao: TfrmTransacao
     Height = 41
     Align = alTop
     TabOrder = 2
-    ExplicitLeft = -315
-    ExplicitWidth = 1108
     object lblTipoMov: TcxLabel
       Left = 7
       Top = 6
@@ -109,6 +104,7 @@ object frmTransacao: TfrmTransacao
         ''
         'EXPENSE'
         'INCOME')
+      Properties.OnChange = cxTipoPropertiesChange
       TabOrder = 1
       Width = 262
     end
@@ -128,9 +124,7 @@ object frmTransacao: TfrmTransacao
     TabOrder = 3
     Properties.ActivePage = TabTransacao
     Properties.CustomButtons.Buttons = <>
-    ExplicitLeft = -315
-    ExplicitWidth = 1108
-    ExplicitHeight = 363
+    OnChange = PageChange
     ClientRectBottom = 402
     ClientRectLeft = 4
     ClientRectRight = 789
@@ -144,8 +138,6 @@ object frmTransacao: TfrmTransacao
       Font.Style = []
       ImageIndex = 0
       ParentFont = False
-      ExplicitWidth = 1100
-      ExplicitHeight = 335
       object Panel2: TPanel
         Left = 0
         Top = 0
@@ -159,7 +151,6 @@ object frmTransacao: TfrmTransacao
         Font.Style = []
         ParentFont = False
         TabOrder = 0
-        ExplicitWidth = 1100
         object lblPeriodo: TLabel
           Left = 72
           Top = 18
@@ -172,6 +163,7 @@ object frmTransacao: TfrmTransacao
           Top = 14
           Caption = 'Forecast'
           TabOrder = 0
+          OnClick = chkForecastClick
           Width = 121
         end
         object chkBalance: TcxCheckBox
@@ -180,6 +172,7 @@ object frmTransacao: TfrmTransacao
           Caption = 'Balance'
           State = cbsChecked
           TabOrder = 1
+          OnClick = chkBalanceClick
           Width = 121
         end
       end
@@ -196,8 +189,6 @@ object frmTransacao: TfrmTransacao
         Font.Style = []
         ParentFont = False
         TabOrder = 1
-        ExplicitWidth = 1100
-        ExplicitHeight = 294
         object cxGrid1DBBandedTableView1: TcxGridDBBandedTableView
           Navigator.Buttons.CustomButtons = <>
           OnCellDblClick = cxGrid1DBBandedTableView1CellDblClick
@@ -210,6 +201,7 @@ object frmTransacao: TfrmTransacao
           OptionsData.DeletingConfirmation = False
           OptionsData.Editing = False
           OptionsData.Inserting = False
+          OptionsSelection.CellSelect = False
           OptionsView.Indicator = True
           Bands = <
             item
@@ -310,7 +302,7 @@ object frmTransacao: TfrmTransacao
       end
     end
     object TabSpend: TcxTabSheet
-      Caption = 'View Spend Analyzer'
+      Caption = 'Center Cost Analyzer'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
@@ -318,10 +310,6 @@ object frmTransacao: TfrmTransacao
       Font.Style = []
       ImageIndex = 2
       ParentFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Page2: TcxPageControl
         Left = 0
         Top = 0
@@ -337,8 +325,6 @@ object frmTransacao: TfrmTransacao
         TabOrder = 0
         Properties.ActivePage = cxTabSheet1
         Properties.CustomButtons.Buttons = <>
-        ExplicitWidth = 1100
-        ExplicitHeight = 335
         ClientRectBottom = 374
         ClientRectLeft = 4
         ClientRectRight = 781
@@ -521,10 +507,6 @@ object frmTransacao: TfrmTransacao
           Font.Style = []
           ImageIndex = 2
           ParentFont = False
-          ExplicitLeft = 0
-          ExplicitTop = 0
-          ExplicitWidth = 0
-          ExplicitHeight = 0
           object Panel4: TPanel
             Left = 0
             Top = 0
@@ -538,7 +520,6 @@ object frmTransacao: TfrmTransacao
             Font.Style = []
             ParentFont = False
             TabOrder = 0
-            ExplicitWidth = 1092
             object cboMonth: TcxComboBox
               Left = 91
               Top = 6
@@ -555,6 +536,7 @@ object frmTransacao: TfrmTransacao
                 'OCTOBER'
                 'NOVEMBER'
                 'DECEMBER')
+              Properties.OnChange = cboMonthPropertiesChange
               TabOrder = 0
               Text = 'JANUARY'
               Width = 158
@@ -582,6 +564,7 @@ object frmTransacao: TfrmTransacao
               ParentFont = False
               TabOrder = 3
               Text = '2020'
+              OnChange = cboYearChange
               Items.Strings = (
                 '2020'
                 '2021'
@@ -639,10 +622,6 @@ object frmTransacao: TfrmTransacao
     object TabIE: TcxTabSheet
       Caption = 'Income vs Expense'
       ImageIndex = 3
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Panel7: TPanel
         Left = 0
         Top = 0
@@ -656,7 +635,6 @@ object frmTransacao: TfrmTransacao
         Font.Style = []
         ParentFont = False
         TabOrder = 0
-        ExplicitWidth = 1100
         object cboMonth3: TcxComboBox
           Left = 139
           Top = 14
@@ -673,6 +651,7 @@ object frmTransacao: TfrmTransacao
             'OCTOBER'
             'NOVEMBER'
             'DECEMBER')
+          Properties.OnChange = cboMonth3PropertiesChange
           TabOrder = 0
           Text = 'JANUARY'
           Width = 158
@@ -702,6 +681,7 @@ object frmTransacao: TfrmTransacao
           ParentFont = False
           TabOrder = 3
           Text = '2020'
+          OnChange = cboYear3Change
           Items.Strings = (
             '2020'
             '2021'
@@ -747,11 +727,13 @@ object frmTransacao: TfrmTransacao
             DisplayText = 'SEMANA'
           end
           object cxTableViewSEMANASeries1: TcxGridDBChartSeries
-            DataBinding.FieldName = 'EXPENSE'
+            DataBinding.FieldName = 'VALOR_EXPENSE'
+            DisplayText = 'Expense'
             ValueCaptionFormat = '#,##0'
           end
           object cxTableViewSEMANASeries2: TcxGridDBChartSeries
-            DataBinding.FieldName = 'INCOME'
+            DataBinding.FieldName = 'VALOR_INCOME'
+            DisplayText = 'Income'
             ValueCaptionFormat = '#,##0'
           end
         end
@@ -3742,16 +3724,12 @@ object frmTransacao: TfrmTransacao
     Connection = Dados.FDConnection
     SQL.Strings = (
       
-        'SELECT CENTRODECUSTO,  DATEPART(week, DATATRANSACAO) as [WEEK], ' +
-        'SUM(VALOR * -1) AS VALOR '
+        'SELECT CENTRODECUSTO,  strftime('#39'%w'#39', DATATRANSACAO) AS WEEK, IF' +
+        'NULL(Sum(CAST(VALOR * -1 AS DECIMAL)),0.00) AS VALOR '
       'FROM TBTRANSACAO '
-      'WHERE 1 = 1 '
-      ' AND DATATRANSACAO BETWEEN '#39'2021-05-01'#39' AND '#39'2022-04-30'#39'  '
-      ' AND ID_USER = 1'
-      'AND CENTRODECUSTO IS NOT NULL '
-      'AND CENTRODECUSTO = '#39'FUEL'#39
-      'GROUP BY CENTRODECUSTO,DATEPART(week, DATATRANSACAO)'
-      'ORDER BY DATEPART(week, DATATRANSACAO)')
+      'WHERE 1 = 1   '
+      'GROUP BY CENTRODECUSTO,strftime('#39'%w'#39', DATATRANSACAO)'
+      'ORDER BY strftime('#39'%w'#39', DATATRANSACAO)')
     Left = 640
     Top = 320
     object sqlGraficoWeekCENTRODECUSTO: TStringField
@@ -3759,17 +3737,20 @@ object frmTransacao: TfrmTransacao
       Origin = 'CENTRODECUSTO'
       Size = 100
     end
-    object sqlGraficoWeekWEEK: TIntegerField
+    object sqlGraficoWeekWEEK: TWideStringField
+      AutoGenerateValue = arDefault
       FieldName = 'WEEK'
       Origin = 'WEEK'
+      ProviderFlags = []
       ReadOnly = True
+      Size = 32767
     end
-    object sqlGraficoWeekVALOR: TFMTBCDField
+    object sqlGraficoWeekVALOR: TFloatField
+      AutoGenerateValue = arDefault
       FieldName = 'VALOR'
       Origin = 'VALOR'
+      ProviderFlags = []
       ReadOnly = True
-      Precision = 38
-      Size = 2
     end
   end
   object dsGraficoWeek: TDataSource
@@ -3791,18 +3772,17 @@ object frmTransacao: TfrmTransacao
     Connection = Dados.FDConnection
     SQL.Strings = (
       
-        'SELECT CENTRODECUSTO,  MONTH(DATATRANSACAO) as MES , YEAR(DATATR' +
-        'ANSACAO) as ANO, SUM(VALOR * -1) AS VALOR '
+        'SELECT CENTRODECUSTO, strftime('#39'%m'#39', DATATRANSACAO) AS MES , str' +
+        'ftime('#39'%Y'#39', DATATRANSACAO) AS ANO, SUM(CAST(VALOR  as decimal) *' +
+        ' -1) AS VALOR '
       'FROM TBTRANSACAO '
-      'WHERE 1 = 1 '
-      ' AND DATATRANSACAO BETWEEN '#39'2021-05-01'#39' AND '#39'2022-04-30'#39'  '
-      ' AND ID_USER = 1'
-      'AND CENTRODECUSTO IS NOT NULL  AND TIPO = '#39'EXPENSE'#39'   '
-      'AND CENTRODECUSTO = '#39'FUEL'#39
+      'WHERE 1 = 1   '
       
-        'GROUP BY CENTRODECUSTO, MONTH(DATATRANSACAO) , YEAR(DATATRANSACA' +
-        'O)'
-      'ORDER BY MONTH(DATATRANSACAO) , YEAR(DATATRANSACAO) DESC')
+        'GROUP BY CENTRODECUSTO,  strftime('#39'%m'#39', DATATRANSACAO) , strftim' +
+        'e('#39'%Y'#39', DATATRANSACAO) '
+      
+        'ORDER BY strftime('#39'%m'#39', DATATRANSACAO) , strftime('#39'%Y'#39', DATATRAN' +
+        'SACAO)  DESC')
     Left = 484
     Top = 320
     object sqlGraficoBarraCENTRODECUSTO: TStringField
@@ -3810,62 +3790,69 @@ object frmTransacao: TfrmTransacao
       Origin = 'CENTRODECUSTO'
       Size = 100
     end
-    object sqlGraficoBarraMES: TIntegerField
+    object sqlGraficoBarraMES: TWideStringField
+      AutoGenerateValue = arDefault
       FieldName = 'MES'
       Origin = 'MES'
+      ProviderFlags = []
       ReadOnly = True
+      Size = 32767
     end
-    object sqlGraficoBarraANO: TIntegerField
+    object sqlGraficoBarraANO: TWideStringField
+      AutoGenerateValue = arDefault
       FieldName = 'ANO'
       Origin = 'ANO'
+      ProviderFlags = []
       ReadOnly = True
+      Size = 32767
     end
-    object sqlGraficoBarraVALOR: TFMTBCDField
+    object sqlGraficoBarraVALOR: TFloatField
+      AutoGenerateValue = arDefault
       FieldName = 'VALOR'
       Origin = 'VALOR'
+      ProviderFlags = []
       ReadOnly = True
-      Precision = 38
-      Size = 2
     end
   end
   object sqlItem: TFDQuery
     Connection = Dados.FDConnection
     SQL.Strings = (
       
-        'SELECT Favorecido, Categoria + '#39'_'#39' + SubCategoria as Categoria, ' +
-        'datatransacao, VALOR  AS VALOR '
+        'SELECT Favorecido,CAST(Categoria + '#39'_'#39' + SubCategoria AS VARCHAR' +
+        '(100)) as Categoria, datatransacao, CAST(VALOR AS decimal) AS VA' +
+        'LOR '
       'FROM TBTRANSACAO '
       'WHERE 1 = 1 '
-      ' AND DATATRANSACAO BETWEEN '#39'2022-01-01'#39' AND '#39'2022-01-31'#39'  '
-      ' and ID_USER = 1'
+      ' AND DATATRANSACAO BETWEEN '#39'2020-01-01'#39' AND '#39'2024-01-31'#39'  '
+      ' and ID_USER = 7'
       'AND CENTRODECUSTO IS NOT NULL  AND TIPO = '#39'EXPENSE'#39'   '
       'and CENTRODECUSTO = '#39'FUEL'#39
       'order by DataTransacao desc')
     Left = 493
     Top = 393
     object sqlItemFavorecido: TStringField
-      AutoGenerateValue = arDefault
       FieldName = 'Favorecido'
-      ProviderFlags = []
+      Origin = 'Favorecido'
       Size = 100
     end
-    object sqlItemCategoria: TStringField
+    object sqlItemCategoria: TWideStringField
+      AutoGenerateValue = arDefault
       FieldName = 'Categoria'
       Origin = 'Categoria'
-      ReadOnly = True
-      Size = 81
-    end
-    object sqlItemdatatransacao: TDateField
-      AutoGenerateValue = arDefault
-      FieldName = 'datatransacao'
       ProviderFlags = []
+      ReadOnly = True
+      Size = 32767
     end
-    object sqlItemVALOR: TBCDField
+    object sqlItemDataTransacao: TDateField
+      FieldName = 'DataTransacao'
+      Origin = 'DataTransacao'
+    end
+    object sqlItemVALOR: TFloatField
       AutoGenerateValue = arDefault
       FieldName = 'VALOR'
+      Origin = 'VALOR'
       ProviderFlags = []
-      Precision = 15
-      Size = 2
+      ReadOnly = True
     end
   end
   object dsRelat01: TDataSource
@@ -3933,76 +3920,66 @@ object frmTransacao: TfrmTransacao
   object sqlGrafIE: TFDQuery
     Connection = Dados.FDConnection
     SQL.Strings = (
-      'WITH DADOS'
-      'AS ('
-      'SELECT DATEPART(WEEK, A.DATATRANSACAO) SEMANA,'
+      'SELECT strftime('#39'%w'#39', DATATRANSACAO)  AS SEMANA , '
+      'coalesce(SUM((SELECT COALESCE(B.VALOR * -1,0) '
+      'FROM TBTRANSACAO B  '
+      'WHERE B.TIPO = '#39'EXPENSE'#39' and FORECAST = 0   '
+      ' and  strftime('#39'%Y'#39', DATATRANSACAO) = '#39'2023'#39
+      'and b.id_user = 14 '
       ''
-      '(SELECT SUM(B.VALOR * -1) AS VALOR  '
-      'FROM TBTRANSACAO B'
-      'WHERE B.TIPO = '#39'EXPENSE'#39
-      ' AND B.DATATRANSACAO BETWEEN '#39'2021-05-01'#39' AND '#39'2022-04-30'#39'  '
-      ' AND B.ID_USER = 1'
-      ' AND B.ID_BANKING = 1'
-      'AND B.CENTRODECUSTO IS NOT NULL'
+      'AND B.CENTRODECUSTO IS NOT NULL '
       
-        'AND DATEPART(WEEK, B.DATATRANSACAO)  = DATEPART(WEEK, A.DATATRAN' +
-        'SACAO) '
-      'AND B.TIPO = A.TIPO'
-      'AND B.Favorecido = A.Favorecido'
-      'AND B.Categoria = A.Categoria'
-      'AND B.SubCategoria = A.SubCategoria'
-      'AND B.ID = A.Id'
-      
-        'GROUP BY B.TIPO, DATEPART(WEEK, B.DATATRANSACAO) ) AS VALOR_EXPE' +
-        'NSE,'
+        'AND strftime('#39'%w'#39', B.DATATRANSACAO)  =  strftime('#39'%w'#39', A.DATATRA' +
+        'NSACAO)  '
+      'AND B.TIPO = A.TIPO '
+      'AND B.Favorecido = A.Favorecido '
+      'AND B.Categoria = A.Categoria  '
+      'AND B.SubCategoria = A.SubCategoria  '
+      'AND B.ID = A.Id  '
+      'GROUP BY B.TIPO, strftime('#39'%w'#39', B.DATATRANSACAO) '
+      ')), 0.00) AS VALOR_EXPENSE , '
+      'coalesce(SUM((SELECT COALESCE(C.VALOR,0) '
+      'FROM TBTRANSACAO C  '
+      ' WHERE C.TIPO = '#39'INCOME'#39' and FORECAST = 0'
+      ' and  strftime('#39'%Y'#39', DATATRANSACAO) = '#39'2023'#39
+      'and c.id_user = 14'
       ''
-      '(SELECT SUM(C.VALOR) AS VALOR  '
-      'FROM TBTRANSACAO C'
-      'WHERE C.TIPO = '#39'INCOME'#39
-      ' AND C.DATATRANSACAO BETWEEN '#39'2021-05-01'#39' AND '#39'2022-04-30'#39'  '
-      ' AND C.ID_USER = 1'
-      ' AND C.ID_BANKING = 1'
-      'AND C.CENTRODECUSTO IS NOT NULL'
+      'AND C.CENTRODECUSTO IS NOT NULL  '
       
-        'AND DATEPART(WEEK, C.DATATRANSACAO)  = DATEPART(WEEK, A.DATATRAN' +
-        'SACAO) '
-      'AND C.TIPO = A.TIPO'
-      'AND C.Favorecido = A.Favorecido'
-      'AND C.Categoria = A.Categoria'
-      'AND C.SubCategoria = A.SubCategoria'
-      'AND C.ID = A.ID'
-      
-        'GROUP BY C.TIPO, DATEPART(WEEK, C.DATATRANSACAO) ) AS VALOR_INCO' +
-        'ME'
-      ''
-      'FROM TBTRANSACAO A'
-      ')'
-      
-        'SELECT SEMANA, SUM(VALOR_EXPENSE) AS EXPENSE, SUM (VALOR_INCOME)' +
-        ' AS INCOME'
-      'FROM DADOS'
-      'GROUP BY SEMANA'
-      'ORDER BY SEMANA')
+        'AND strftime('#39'%w'#39', C.DATATRANSACAO)  = strftime('#39'%w'#39', A.DATATRAN' +
+        'SACAO)  '
+      'AND C.TIPO = A.TIPO '
+      'AND C.Favorecido = A.Favorecido '
+      'AND C.Categoria = A.Categoria '
+      'AND C.SubCategoria = A.SubCategoria '
+      'AND C.ID = A.ID   '
+      'GROUP BY C.TIPO, strftime('#39'%w'#39', C.DATATRANSACAO)  '
+      ')), 0.00) AS VALOR_INCOME '
+      'FROM TBTRANSACAO A WHERE  A.FORECAST = 0 '
+      'group by strftime('#39'%w'#39', DATATRANSACAO)   ')
     Left = 212
     Top = 393
-    object sqlGrafIESEMANA: TIntegerField
+    object sqlGrafIESEMANA: TWideStringField
+      AutoGenerateValue = arDefault
       FieldName = 'SEMANA'
       Origin = 'SEMANA'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 32767
+    end
+    object sqlGrafIEVALOR_EXPENSE: TFloatField
+      AutoGenerateValue = arDefault
+      FieldName = 'VALOR_EXPENSE'
+      Origin = 'VALOR_EXPENSE'
+      ProviderFlags = []
       ReadOnly = True
     end
-    object sqlGrafIEEXPENSE: TFMTBCDField
-      FieldName = 'EXPENSE'
-      Origin = 'EXPENSE'
+    object sqlGrafIEVALOR_INCOME: TFloatField
+      AutoGenerateValue = arDefault
+      FieldName = 'VALOR_INCOME'
+      Origin = 'VALOR_INCOME'
+      ProviderFlags = []
       ReadOnly = True
-      Precision = 38
-      Size = 2
-    end
-    object sqlGrafIEINCOME: TFMTBCDField
-      FieldName = 'INCOME'
-      Origin = 'INCOME'
-      ReadOnly = True
-      Precision = 38
-      Size = 2
     end
   end
   object dsDetalhe: TDataSource
@@ -4018,7 +3995,9 @@ object frmTransacao: TfrmTransacao
   object sqlGrafico1: TFDQuery
     Connection = Dados.FDConnection
     SQL.Strings = (
-      'SELECT '#39'TOTAL'#39' AS LEGENDA, SUM(VALOR * -1) AS VALOR'
+      
+        'SELECT CAST('#39'TOTAL'#39' AS VARCHAR(100)) AS LEGENDA,  cast(Valor as ' +
+        'decimal) as Valor'
       'FROM TBTRANSACAO'
       'WHERE DATATRANSACAO BETWEEN '#39'2022-01-01 '#39' AND '#39'2022-01-31'#39
       
@@ -4026,7 +4005,9 @@ object frmTransacao: TfrmTransacao
         'SE'#39
       ''
       'UNION ALL   '
-      'SELECT '#39'FUEL'#39', SUM(VALOR * -1) AS VALOR'
+      
+        'SELECT CAST('#39'FUEL'#39' AS VARCHAR(100)) AS LEGENDA,  cast(Valor as d' +
+        'ecimal) as Valor'
       'FROM TBTRANSACAO'
       'WHERE DATATRANSACAO BETWEEN '#39'2022-01-01 '#39' AND '#39'2022-01-31'#39' '
       'AND ID_USER = 1'
@@ -4035,28 +4016,30 @@ object frmTransacao: TfrmTransacao
         'PO = '#39'EXPENSE'#39)
     Left = 76
     Top = 320
-    object sqlGrafico1LEGENDA: TStringField
+    object sqlGrafico1LEGENDA: TWideStringField
+      AutoGenerateValue = arDefault
       FieldName = 'LEGENDA'
       Origin = 'LEGENDA'
+      ProviderFlags = []
       ReadOnly = True
-      Required = True
-      Size = 7
+      Size = 32767
     end
-    object sqlGrafico1VALOR: TFMTBCDField
-      FieldName = 'VALOR'
-      Origin = 'VALOR'
+    object sqlGrafico1Valor: TFloatField
+      AutoGenerateValue = arDefault
+      FieldName = 'Valor'
+      Origin = 'Valor'
+      ProviderFlags = []
       ReadOnly = True
-      Precision = 38
-      Size = 2
     end
   end
   object sqlDetalhe: TFDQuery
     Connection = Dados.FDConnection
     SQL.Strings = (
       
-        'SELECT ID, Favorecido, Categoria, SubCategoria, DataTransacao, V' +
-        'alor, month(datatransacao) as mes, year(datatransacao) as ano FR' +
-        'OM TBTRANSACAO where 1 = 1')
+        'SELECT ID, Favorecido, Categoria, SubCategoria, DataTransacao, c' +
+        'ast(Valor as decimal) as Valor, strftime('#39'm'#39', DATATRANSACAO) as ' +
+        'mes,  strftime('#39'%Y'#39', DATATRANSACAO) as ano FROM TBTRANSACAO wher' +
+        'e 1 = 1')
     Left = 76
     Top = 393
     object sqlDetalheID: TFDAutoIncField
@@ -4084,21 +4067,28 @@ object frmTransacao: TfrmTransacao
       FieldName = 'DataTransacao'
       Origin = 'DataTransacao'
     end
-    object sqlDetalheValor: TBCDField
+    object sqlDetalheValor: TFloatField
+      AutoGenerateValue = arDefault
       FieldName = 'Valor'
       Origin = 'Valor'
-      Precision = 15
-      Size = 2
+      ProviderFlags = []
+      ReadOnly = True
     end
-    object sqlDetalhemes: TIntegerField
+    object sqlDetalhemes: TWideStringField
+      AutoGenerateValue = arDefault
       FieldName = 'mes'
       Origin = 'mes'
+      ProviderFlags = []
       ReadOnly = True
+      Size = 32767
     end
-    object sqlDetalheano: TIntegerField
+    object sqlDetalheano: TWideStringField
+      AutoGenerateValue = arDefault
       FieldName = 'ano'
       Origin = 'ano'
+      ProviderFlags = []
       ReadOnly = True
+      Size = 32767
     end
   end
   object SqlAux: TFDQuery

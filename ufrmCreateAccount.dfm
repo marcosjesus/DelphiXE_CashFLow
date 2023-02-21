@@ -13,6 +13,7 @@ object frmCreateAccount: TfrmCreateAccount
   Font.Style = []
   OldCreateOrder = False
   Position = poMainFormCenter
+  OnActivate = FormActivate
   PixelsPerInch = 96
   TextHeight = 13
   object Panel1: TPanel
@@ -123,6 +124,7 @@ object frmCreateAccount: TfrmCreateAccount
       Font.Style = []
       ParentFont = False
       TabOrder = 0
+      Text = 'JOAO'
     end
     object edtEmail: TEdit
       Left = 160
@@ -137,6 +139,7 @@ object frmCreateAccount: TfrmCreateAccount
       Font.Style = []
       ParentFont = False
       TabOrder = 1
+      Text = 'JOAO@UOL.COM'
     end
     object edtPassword: TEdit
       Left = 160
@@ -152,6 +155,7 @@ object frmCreateAccount: TfrmCreateAccount
       ParentFont = False
       PasswordChar = '*'
       TabOrder = 2
+      Text = '123'
     end
     object butOk: TcxButton
       Left = 359
@@ -253,8 +257,8 @@ object frmCreateAccount: TfrmCreateAccount
   end
   object sqlSalvar: TFDQuery
     Connection = Dados.FDConnection
-    Left = 88
-    Top = 121
+    Left = 160
+    Top = 41
   end
   object sqlAux: TFDQuery
     Connection = Dados.FDConnection
